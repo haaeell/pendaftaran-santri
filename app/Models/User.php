@@ -54,4 +54,9 @@ class User extends Authenticatable
     {
         return $this->role === 'santri';
     }
+
+    public function getRegistrationIdAttribute()
+    {
+        return 'PSB-' . date('Y') . '-' . str_pad($this->id, 5, '0', STR_PAD_LEFT);
+    }
 }

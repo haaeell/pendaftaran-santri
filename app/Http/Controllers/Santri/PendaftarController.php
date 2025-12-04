@@ -1,0 +1,113 @@
+<?php
+
+namespace App\Http\Controllers\Santri;
+
+use App\Http\Controllers\Controller;
+use App\Models\DataDiriSantri;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+
+class PendaftarController extends Controller
+{
+    public function index()
+    {
+        $user = Auth::user();
+        $data = $user->dataDiri;
+        return view('santri.pendaftar.index', compact('data', 'user'));
+    }
+
+    public function store(Request $request)
+    {
+        DataDiriSantri::create(array_merge(
+            $request->all(),
+            ['user_id' => Auth::id()]
+        ));
+
+        return back()->with('success', 'Data berhasil disimpan.');
+    }
+
+    public function edit()
+    {
+        $user = Auth::user();
+        $data = $user->dataDiri;
+
+        return view('santri.pendaftar.edit', compact('data', 'user'));
+    }
+
+    public function update(Request $request)
+    {
+        $request->validate([
+            'nama_lengkap' => 'required',
+            'jenis_kelamin' => 'required|in:L,P',
+            'pendidikan_tujuan' => 'required'
+        ]);
+
+        $user = Auth::user();
+        $user->update([
+            'name'     => $request->nama_lengkap,
+            'email'    => $request->email,
+            'no_telp'  => $request->no_telp,
+            'nik'      => $request->nik,
+        ]);
+
+        $data = DataDiriSantri::firstOrNew(['user_id' => $user->id]);
+
+        $fields = [
+            'nama_lengkap',
+            'kabupaten_lahir',
+            'tanggal_lahir',
+            'jenis_kelamin',
+            'alamat_domisili',
+            'nisn',
+            'instansi_1',
+            'instansi_2',
+            'instansi_3',
+            'prestasi_1',
+            'prestasi_2',
+            'prestasi_3',
+            'hubungan_wali',
+            'nama_wali',
+            'no_telp_wali',
+            'pendidikan_tujuan',
+            'info_alumni',
+            'info_saudara',
+            'info_instagram',
+            'info_tiktok',
+            'info_youtube',
+            'info_facebook',
+            'info_lainnya'
+        ];
+
+        foreach ($fields as $field) {
+            $data->$field = $request->$field ?? $data->$field ?? null;
+        }
+
+        foreach (
+            [
+                'info_alumni',
+                'info_saudara',
+                'info_instagram',
+                'info_tiktok',
+                'info_youtube',
+                'info_facebook',
+                'info_lainnya'
+            ] as $chk
+        ) {
+            $data->$chk = $request->has($chk) ? 1 : 0;
+        }
+
+        if ($request->hasFile('foto_diri')) {
+            $path = $request->file('foto_diri')->store('foto_diri', 'public');
+            $data->foto_diri = $path;
+        }
+
+        if ($request->hasFile('foto_kk')) {
+            $path = $request->file('foto_kk')->store('foto_kk', 'public');
+            $data->foto_kk = $path;
+        }
+
+        $data->save();
+        return redirect()->route('santri.pendaftar.index')->with('success', 'Data berhasil disimpan.');
+    }
+}

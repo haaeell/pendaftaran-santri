@@ -1,0 +1,252 @@
+@extends('layouts.dashboard')
+
+@section('title', 'Jadwal Seleksi')
+@section('judul', 'Jadwal Seleksi')
+
+@section('content')
+
+    <div class="card shadow p-4">
+
+        @if (session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+        @if (session('error'))
+            <div class="alert alert-danger">{{ session('error') }}</div>
+        @endif
+
+        {{-- ======================== JIKA SUDAH TEST ======================== --}}
+        @if (isset($hasilTes) && $hasilTes->count() > 0)
+
+            <h5 class="fw-bold mb-3">Data Diri Singkat</h5>
+
+            <table class="table table-bordered">
+                <tr>
+                    <th>ID Pendaftaran</th>
+                    <td>{{ $user->registration_id }}</td>
+                </tr>
+                <tr>
+                    <th width="30%">Nama Lengkap</th>
+                    <td>{{ $user->name }}</td>
+                </tr>
+                <tr>
+                    <th>NISN</th>
+                    <td>{{ $user->dataDiri->nisn ?? '-' }}</td>
+                </tr>
+                <tr>
+                    <th>Pendidikan Tujuan</th>
+                    <td>{{ $user->dataDiri->pendidikan_tujuan ?? '-' }}</td>
+                </tr>
+            </table>
+
+            <hr class="my-4">
+
+            <h5 class="fw-bold mb-3">Riwayat Tes Seleksi</h5>
+
+            <div class="alert alert-success">
+                Tes telah diselesaikan.
+            </div>
+
+            @foreach ($hasilTes as $item)
+                @php
+                    $data = json_decode($item->jawaban, true);
+                    $jawaban = $data['jawaban'] ?? [];
+                    $kategoriNama = $item->kategori->nama_kategori;
+                @endphp
+
+                <div class="card mb-4">
+                    <div class="card-header bg-light fw-bold">
+                        {{ $kategoriNama }}
+                    </div>
+
+                    <div class="card-body">
+
+                        {{-- Tabel Detail Jawaban --}}
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th width="5%">No</th>
+                                    <th>Pertanyaan</th>
+                                    <th width="25%">Jawaban User</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach ($jawaban as $i => $row)
+                                    @php
+                                        $soal = \App\Models\Soal::find($row['soal_id']);
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $i + 1 }}</td>
+
+                                        <td>{{ $soal->pertanyaan ?? '-' }}</td>
+
+                                        <td>
+                                            {{ $row['jawaban_user_text'] ?? '-' }}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            @endforeach
+
+
+            <hr class="my-4">
+
+            <h5 class="fw-bold">Status Seleksi Akhir</h5>
+
+            @php $status = $user->dataDiri->status_seleksi; @endphp
+
+            @if ($status == 'belum_diterima')
+                <div class="alert alert-secondary text-center">
+                    Menunggu keputusan admin.
+                </div>
+            @elseif ($status == 'lolos_seleksi')
+                <div class="alert alert-success text-center fw-bold fs-5">
+                    LOLOS — Selamat! Anda lolos seleksi.
+                </div>
+            @elseif ($status == 'tidak_lolos_seleksi')
+                <div class="alert alert-danger text-center fw-bold fs-5">
+                    BELUM LOLOS — Tetap semangat!
+                </div>
+            @elseif ($status == 'diterima')
+                <div class="alert alert-primary text-center fw-bold fs-5">
+                    DITERIMA — Selamat bergabung di pesantren.
+                </div>
+            @elseif ($status == 'gugur')
+                <div class="alert alert-dark text-center fw-bold fs-5">
+                    GUGUR — Tetap semangat.
+                </div>
+            @endif
+        @else
+            {{-- ======================== BELUM TEST :: TAMPIL NORMAL ======================== --}}
+
+            <h5 class="fw-bold mb-3">Pembayaran Registrasi Seleksi</h5>
+
+            @if ($pembayaran)
+                @if ($pembayaran->status == 'menunggu')
+                    <div class="alert alert-warning">
+                        <strong>Bukti pembayaran telah diupload.</strong><br>Menunggu verifikasi admin.
+                    </div>
+                @elseif ($pembayaran->status == 'ditolak')
+                    <div class="alert alert-danger">
+                        <strong>Pembayaran ditolak.</strong><br>
+                        Alasan: {{ $pembayaran->catatan_admin }}<br>
+                        Silakan upload ulang bukti pembayaran.
+                    </div>
+                @elseif ($pembayaran->status == 'diterima')
+                    <div class="alert alert-success"><strong>Pembayaran diterima.</strong></div>
+                @endif
+            @else
+                <div class="alert alert-info">
+                    Silakan melakukan pembayaran biaya registrasi untuk mengikuti tes seleksi.
+                </div>
+            @endif
+
+            <table class="table table-bordered mt-3">
+                <tr>
+                    <th width="40%">Biaya Registrasi</th>
+                    <td>Rp {{ number_format($biaya->nominal, 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <th>Status Pembayaran</th>
+                    <td>
+                        @if (!$pembayaran)
+                            <span class="badge bg-danger">Belum Dibayar</span>
+                        @elseif ($pembayaran->status == 'menunggu')
+                            <span class="badge bg-warning text-dark">Menunggu Verifikasi</span>
+                        @elseif ($pembayaran->status == 'ditolak')
+                            <span class="badge bg-danger">Ditolak</span>
+                        @else
+                            <span class="badge bg-success">Diterima</span>
+                        @endif
+                    </td>
+                </tr>
+            </table>
+
+            <h6 class="fw-bold mt-4">Rekening Pembayaran</h6>
+            <table class="table table-striped mt-2">
+                @foreach ($rekening as $r)
+                    <tr>
+                        <td width="30%"><strong>{{ $r->bank }}</strong></td>
+                        <td>{{ $r->nomor_rekening }} <br> <small>{{ $r->atas_nama }}</small></td>
+                    </tr>
+                @endforeach
+            </table>
+
+            @if (!$pembayaran || $pembayaran->status == 'ditolak')
+                <hr>
+                <form action="{{ route('santri.jadwal.upload') }}" method="POST" enctype="multipart/form-data"
+                    class="mt-3">
+                    @csrf
+
+                    <div class="mb-3">
+                        <label class="fw-bold">Pilih Rekening Tujuan</label>
+                        <select name="rekening_id" class="form-control" required>
+                            <option value="">-- Pilih Rekening --</option>
+                            @foreach ($rekening as $r)
+                                <option value="{{ $r->id }}">{{ $r->bank }} - {{ $r->nomor_rekening }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-bold">Upload Bukti Pembayaran</label>
+                        <input type="file" name="bukti_transfer" class="form-control" accept="image/*" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-upload"></i> Upload Bukti Pembayaran
+                    </button>
+                </form>
+            @endif
+
+
+            @if ($pembayaran && $pembayaran->status == 'diterima' && $jadwalTes)
+                <div class="alert alert-primary mt-4">
+                    <strong>Jadwal Tes Anda:</strong><br>
+                    {{ date('d M Y H:i', strtotime($jadwalTes->waktu_mulai)) }} –
+                    {{ date('H:i', strtotime($jadwalTes->waktu_selesai)) }}
+                </div>
+
+                @php
+                    $now = now();
+                    $start = \Carbon\Carbon::parse($jadwalTes->waktu_mulai);
+                    $end = \Carbon\Carbon::parse($jadwalTes->waktu_selesai);
+                @endphp
+
+                @if ($now->lt($start))
+                    <div class="alert alert-warning">Tes belum dapat dimulai.</div>
+                @elseif ($now->between($start, $end))
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mulaiTesModal">
+                        Mulai Tes
+                    </button>
+
+                    <div class="modal fade" id="mulaiTesModal">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <form action="{{ route('santri.test.start') }}" method="POST" class="modal-content">
+                                @csrf
+                                <div class="modal-body">
+                                    Pastikan anda siap untuk mengikuti tes. Tes tidak dapat diulang.
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
+                                    <button class="btn btn-primary">Mulai</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                @else
+                    <div class="alert alert-danger">Waktu tes telah berakhir.</div>
+                @endif
+
+            @endif
+
+        @endif
+
+    </div>
+
+@endsection

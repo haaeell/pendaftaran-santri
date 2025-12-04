@@ -13,6 +13,7 @@ class HasilTesSantri extends Model
         'kategori_id',
         'nilai',
         'lulus_threshold',
+        'jawaban',
     ];
 
     protected $casts = [
