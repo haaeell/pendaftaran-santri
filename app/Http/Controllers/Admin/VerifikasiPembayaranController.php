@@ -39,4 +39,14 @@ class VerifikasiPembayaranController extends Controller
 
         return back()->with('success', 'Pembayaran ditolak.');
     }
+
+    public function cancel($id)
+    {
+        PembayaranSantri::findOrFail($id)->update([
+            'status' => 'menunggu',
+            'catatan_admin' => null,
+        ]);
+
+        return back()->with('success', 'Verifikasi pembayaran berhasil dibatalkan.');
+    }
 }

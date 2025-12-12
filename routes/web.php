@@ -1,21 +1,27 @@
 <?php
 
-use App\Http\Controllers\Admin\DataPendaftarController;
-use App\Http\Controllers\Admin\HasilSeleksiController;
-use App\Http\Controllers\Admin\JadwalTestController;
-use App\Http\Controllers\Admin\MasterSoalController;
-use App\Http\Controllers\Admin\PengumumanController;
-use App\Http\Controllers\Admin\TahunAkademikController;
-use App\Http\Controllers\Admin\VerifikasiPembayaranController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\Santri\DaftarUlangController;
-use App\Http\Controllers\Santri\JadwalSeleksiController;
-use App\Http\Controllers\Santri\PendaftarController;
-use App\Http\Controllers\Santri\StatusSeleksiController;
-use App\Http\Controllers\Santri\TestController;
+use App\Http\Controllers\Santri\ProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\HomeController;
+
+/* SANTRI */
+use App\Http\Controllers\Santri\PendaftarController;
+use App\Http\Controllers\Santri\JadwalSeleksiController;
+use App\Http\Controllers\Santri\TestController;
+use App\Http\Controllers\Santri\DaftarUlangController;
+use App\Http\Controllers\Santri\StatusSeleksiController;
+
+/* ADMIN */
+use App\Http\Controllers\Admin\VerifikasiPembayaranController;
+use App\Http\Controllers\Admin\JadwalTestController;
+use App\Http\Controllers\Admin\HasilSeleksiController;
+use App\Http\Controllers\Admin\PengumumanController;
+use App\Http\Controllers\Admin\TahunAkademikController;
+use App\Http\Controllers\Admin\DataPendaftarController;
+use App\Http\Controllers\Admin\MasterSoalController;
+use App\Http\Controllers\Admin\PengaturanPembayaranController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,85 +29,199 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', function () {
-    return redirect()->route('login');
-});
-
+Route::get('/', fn() => redirect()->route('login'));
 
 Auth::routes();
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+
+
 /*
 |--------------------------------------------------------------------------
-| SANTRI AREA
+| AREA SANTRI
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')
     ->prefix('santri')
     ->name('santri.')
     ->group(function () {
-        Route::get('/pendaftar', [PendaftarController::class, 'index'])->name('pendaftar.index');
-        Route::post('/pendaftar', [PendaftarController::class, 'store'])->name('pendaftar.store');
-        Route::get('/pendaftar/edit', [PendaftarController::class, 'edit'])->name('pendaftar.edit');
-        Route::post('/pendaftar/update', [PendaftarController::class, 'update'])->name('pendaftar.update');
 
-        Route::get('/jadwal', [JadwalSeleksiController::class, 'index'])->name('jadwal.index');
-        Route::post('/jadwal/upload-bukti', [JadwalSeleksiController::class, 'uploadBukti'])->name('jadwal.upload');
+        /* PENDAFTAR */
+        Route::controller(PendaftarController::class)->group(function () {
+            Route::get('/pendaftar', 'index')->name('pendaftar.index');
+            Route::post('/pendaftar', 'store')->name('pendaftar.store');
+            Route::get('/pendaftar/edit', 'edit')->name('pendaftar.edit');
+            Route::post('/pendaftar/update', 'update')->name('pendaftar.update');
+        });
 
-        Route::post('/test/start', [TestController::class, 'start'])->name('test.start');
-        Route::get('/test', [TestController::class, 'index'])->name('test.index');
-        Route::post('/test/submit', [TestController::class, 'submit'])->name('test.submit');
+        /* JADWAL SELEKSI */
+        Route::controller(JadwalSeleksiController::class)->group(function () {
+            Route::get('/jadwal', 'index')->name('jadwal.index');
+            Route::post('/jadwal/upload-bukti', 'uploadBukti')->name('jadwal.upload');
+        });
 
-        Route::get('/daftar-ulang', [DaftarUlangController::class, 'index'])->name('daftarulang.index');
-        Route::post('/daftar-ulang/upload', [DaftarUlangController::class, 'upload'])->name('daftarulang.upload');
+        /* TEST */
+        Route::controller(TestController::class)->group(function () {
+            Route::post('/test/start', 'start')->name('test.start');
+            Route::get('/test', 'index')->name('test.index');
+            Route::post('/test/submit', 'submit')->name('test.submit');
+        });
 
+        /* DAFTAR ULANG */
+        Route::controller(DaftarUlangController::class)->group(function () {
+            Route::get('/daftar-ulang', 'index')->name('daftarulang.index');
+            Route::post('/daftar-ulang/upload', 'upload')->name('daftarulang.upload');
+        });
 
+        /* STATUS SELEKSI */
         Route::get('/status', [StatusSeleksiController::class, 'index'])->name('status.index');
+
+        Route::get('/profile', [ProfileController::class, 'index'])
+            ->name('profile.index');
+
+        Route::post('/profile', [ProfileController::class, 'update'])
+            ->name('profile.update');
     });
+
+
 
 /*
 |--------------------------------------------------------------------------
-| ADMIN AREA
+| AREA ADMIN
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-        Route::get('/verifikasi-pembayaran', [VerifikasiPembayaranController::class, 'index'])->name('payment.index');
-        Route::post('/verifikasi-pembayaran/approve/{id}', [VerifikasiPembayaranController::class, 'approve'])->name('payment.approve');
-        Route::post('/verifikasi-pembayaran/reject/{id}', [VerifikasiPembayaranController::class, 'reject'])->name('payment.reject');
 
-        Route::get('/jadwal-test', [JadwalTestController::class, 'index'])->name('jadwal.index');
-        Route::post('/jadwal-test/store', [JadwalTestController::class, 'store'])->name('jadwal.store');
-        Route::post('/jadwal-test/update/{id}', [JadwalTestController::class, 'update'])->name('jadwal.update');
-        Route::delete('/jadwal-test/delete/{id}', [JadwalTestController::class, 'destroy'])->name('jadwal.delete');
+        /*
+        |-------------------------------
+        | VERIFIKASI PEMBAYARAN
+        |-------------------------------
+        */
+        Route::prefix('verifikasi-pembayaran')
+            ->name('payment.')
+            ->controller(VerifikasiPembayaranController::class)
+            ->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::post('{id}/approve', 'approve')->name('approve');
+                Route::post('{id}/reject', 'reject')->name('reject');
+                Route::post('{id}/cancel', 'cancel')->name('cancel'); // 🟡 tambahan baru
+            });
 
-        Route::get('/hasil-seleksi', [HasilSeleksiController::class, 'index'])->name('hasil.index');
-        Route::post('/hasil-seleksi/proses', [HasilSeleksiController::class, 'proses'])->name('hasil.proses');
 
-        Route::get('/pengumuman', [PengumumanController::class, 'index'])->name('pengumuman.index');
-        Route::post('/pengumuman/umumkan', [PengumumanController::class, 'umumkan'])->name('pengumuman.umumkan');
+        /*
+        |-------------------------------
+        | JADWAL TEST
+        |-------------------------------
+        */
+        Route::prefix('jadwal-test')
+            ->name('jadwal.')
+            ->controller(JadwalTestController::class)
+            ->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::post('/store', 'store')->name('store');
+                Route::post('/update/{id}', 'update')->name('update');
+                Route::delete('/delete/{id}', 'destroy')->name('delete');
+            });
 
-        Route::get('/tahun-akademik', [TahunAkademikController::class, 'index'])->name('tahun.index');
-        Route::post('/tahun-akademik/store', [TahunAkademikController::class, 'store'])->name('tahun.store');
-        Route::post('/tahun-akademik/update/{id}', [TahunAkademikController::class, 'update'])->name('tahun.update');
-        Route::delete('/tahun-akademik/delete/{id}', [TahunAkademikController::class, 'destroy'])->name('tahun.delete');
-        Route::post('/tahun-akademik/aktifkan/{id}', [TahunAkademikController::class, 'aktifkan'])->name('tahun.aktifkan');
 
+        /*
+        |-------------------------------
+        | HASIL SELEKSI
+        |-------------------------------
+        */
+        Route::prefix('hasil-seleksi')
+            ->name('hasil.')
+            ->controller(HasilSeleksiController::class)
+            ->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::post('/proses', 'proses')->name('proses');
+            });
+
+
+        /*
+        |-------------------------------
+        | PENGUMUMAN
+        |-------------------------------
+        */
+        Route::prefix('pengumuman')
+            ->name('pengumuman.')
+            ->controller(PengumumanController::class)
+            ->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::post('/umumkan', 'umumkan')->name('umumkan');
+            });
+
+
+        /*
+        |-------------------------------
+        | TAHUN AKADEMIK
+        |-------------------------------
+        */
+        Route::prefix('tahun-akademik')
+            ->name('tahun.')
+            ->controller(TahunAkademikController::class)
+            ->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::post('/store', 'store')->name('store');
+                Route::post('/update/{id}', 'update')->name('update');
+                Route::delete('/delete/{id}', 'destroy')->name('delete');
+                Route::post('/aktifkan/{id}', 'aktifkan')->name('aktifkan');
+            });
+
+
+        /*
+        |-------------------------------
+        | DATA PENDAFTAR
+        |-------------------------------
+        */
         Route::get('/pendaftar', [DataPendaftarController::class, 'index'])
             ->name('pendaftar.index');
 
-        Route::prefix('master-soal')->name('master-soal.')->group(function () {
-            Route::get('/', [MasterSoalController::class, 'index'])->name('index');
 
-            // kategori
-            Route::post('/kategori/store', [MasterSoalController::class, 'storeKategori'])->name('kategori.store');
-            Route::put('/kategori/update/{id}', [MasterSoalController::class, 'updateKategori'])->name('kategori.update');
-            Route::delete('/kategori/delete/{id}', [MasterSoalController::class, 'deleteKategori'])->name('kategori.delete');
+        /*
+        |-------------------------------
+        | MASTER SOAL
+        |-------------------------------
+        */
+        Route::prefix('master-soal')
+            ->name('master-soal.')
+            ->controller(MasterSoalController::class)
+            ->group(function () {
 
-            // soal
-            Route::post('/soal/store', [MasterSoalController::class, 'storeSoal'])->name('soal.store');
-            Route::put('/soal/update/{id}', [MasterSoalController::class, 'updateSoal'])->name('soal.update');
-            Route::delete('/soal/delete/{id}', [MasterSoalController::class, 'deleteSoal'])->name('soal.delete');
-        });
+                Route::get('/', 'index')->name('index');
+
+                // kategori
+                Route::post('/kategori/store', 'storeKategori')->name('kategori.store');
+                Route::put('/kategori/update/{id}', 'updateKategori')->name('kategori.update');
+                Route::delete('/kategori/delete/{id}', 'deleteKategori')->name('kategori.delete');
+
+                // soal
+                Route::post('/soal/store', 'storeSoal')->name('soal.store');
+                Route::put('/soal/update/{id}', 'updateSoal')->name('soal.update');
+                Route::delete('/soal/delete/{id}', 'deleteSoal')->name('soal.delete');
+            });
+
+        Route::prefix('pengaturan-pembayaran')
+            ->name('pengaturan-pembayaran.')
+            ->controller(PengaturanPembayaranController::class)
+            ->group(function () {
+
+                Route::get('/', 'index')->name('index');
+
+                // pembayaran
+                Route::put('/{id}', 'update')->name('update');
+
+                // rekening
+                Route::post('/rekening', 'storeRekening')->name('rekening.store');
+                Route::put('/rekening/{id}', 'updateRekening')->name('rekening.update');
+                Route::delete('/rekening/{id}', 'deleteRekening')->name('rekening.delete');
+
+                // timeline seleksi
+                Route::post('/timeline', 'storeTimeline')->name('timeline.store');
+                Route::put('/timeline/{id}', 'updateTimeline')->name('timeline.update');
+                Route::delete('/timeline/{id}', 'deleteTimeline')->name('timeline.delete');
+            });
     });

@@ -108,6 +108,6 @@ class PendaftarController extends Controller
         }
 
         $data->save();
-        return redirect()->route('santri.pendaftar.index')->with('success', 'Data berhasil disimpan.');
+        return redirect()->route('santri.jadwal.index')->with('success', 'Data berhasil disimpan.');
     }
 }

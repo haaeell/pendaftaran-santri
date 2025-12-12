@@ -210,14 +210,6 @@
                     {{ $jadwalTes ? 'Tersedia' : 'Belum Ada' }}
                 </span>
             </div>
-
-            <div class="step-item">
-                <span class="step-label">Hasil Seleksi</span>
-                <span class="badge-modern {{ $hasil ? 'bg-primary2' : 'bg-gray' }}">
-                    {{ $hasil ? 'Siap Dilihat Saat Pengumuman' : 'Belum' }}
-                </span>
-            </div>
-
         </div>
     @endif
 

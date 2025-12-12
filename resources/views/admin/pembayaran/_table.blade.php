@@ -51,7 +51,7 @@
                         @endif
                     </td>
 
-                    <td>
+                    <td class="text-nowrap">
                         @if ($p->status == 'menunggu')
                             {{-- APPROVE --}}
                             <form action="{{ route('admin.payment.approve', $p->id) }}" method="POST" class="d-inline">
@@ -66,10 +66,18 @@
                                 data-bs-target="#rejectModal{{ $p->id }}">
                                 <i class="fas fa-times"></i> Tolak
                             </button>
-                        @else
-                            <em class="text-muted">Sudah diverifikasi</em>
+                        @elseif ($p->status == 'diterima' || $p->status == 'ditolak')
+                            {{-- CANCEL --}}
+                            <form action="{{ route('admin.payment.cancel', $p->id) }}" method="POST" class="d-inline"
+                                onsubmit="return confirm('Batalkan verifikasi pembayaran ini?')">
+                                @csrf
+                                <button class="btn btn-sm btn-warning">
+                                    <i class="fas fa-undo"></i> Batalkan
+                                </button>
+                            </form>
                         @endif
                     </td>
+
                 </tr>
 
             @empty
