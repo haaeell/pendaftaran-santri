@@ -50,15 +50,11 @@
                                     data-bs-target="#modalEditKategori{{ $kat->id }}">
                                     <i class="fas fa-edit"></i>
                                 </button>
+                                <button class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                    data-bs-target="#modalDeleteKategori{{ $kat->id }}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
 
-                                <form action="{{ route('admin.master-soal.kategori.delete', $kat->id) }}" method="POST"
-                                    class="d-inline">
-                                    @csrf @method('DELETE')
-                                    <button class="btn btn-sm btn-danger"
-                                        onclick="return confirm('Hapus kategori? Semua soal akan ikut terhapus.')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
                             </td>
                         </tr>
                     @endforeach
@@ -68,6 +64,90 @@
         </div>
     </div>
 
+    @foreach ($kategori as $kat)
+        <div class="modal fade" id="modalDeleteKategori{{ $kat->id }}" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <form action="{{ route('admin.master-soal.kategori.delete', $kat->id) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+
+                        <div class="modal-header">
+                            <h5 class="modal-title text-danger">
+                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                Konfirmasi Hapus Kategori
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <p class="mb-1">
+                                Yakin ingin menghapus kategori:
+                                <strong>{{ $kat->nama_kategori }}</strong>?
+                            </p>
+                            <small class="text-danger">
+                                ⚠ Semua soal dalam kategori ini akan ikut terhapus.
+                            </small>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                Batal
+                            </button>
+                            <button type="submit" class="btn btn-danger">
+                                Ya, Hapus
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        @foreach ($kat->soal as $soal)
+            <div class="modal fade" id="modalDeleteSoal{{ $soal->id }}" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <form action="{{ route('admin.master-soal.soal.delete', $soal->id) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+
+                            <div class="modal-header">
+                                <h5 class="modal-title text-danger">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>
+                                    Konfirmasi Hapus Soal
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <p>
+                                    Yakin ingin menghapus soal berikut?
+                                </p>
+                                <div class="alert alert-light border">
+                                    {{ Str::limit($soal->pertanyaan, 100) }}
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    Batal
+                                </button>
+                                <button type="submit" class="btn btn-danger">
+                                    Ya, Hapus
+                                </button>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    @endforeach
 
     {{-- =======================================================
     TABLE SOAL
@@ -122,13 +202,11 @@
                                         <i class="fas fa-edit"></i>
                                     </button>
 
-                                    <form action="{{ route('admin.master-soal.soal.delete', $soal->id) }}" method="POST"
-                                        class="d-inline">
-                                        @csrf @method('DELETE')
-                                        <button class="btn btn-sm btn-danger" onclick="return confirm('Hapus soal?')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
+                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                        data-bs-target="#modalDeleteSoal{{ $soal->id }}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+
                                 </td>
                             </tr>
                         @endforeach
@@ -152,30 +230,37 @@
 
                     <div class="modal-header">
                         <h5 class="modal-title">Tambah Kategori Soal</h5>
-                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
 
                     <div class="modal-body">
-
                         <label>Nama Kategori</label>
                         <input type="text" name="nama_kategori" class="form-control mb-2" required>
 
                         <label>Tipe Penilaian</label>
-                        <select name="tipe_kriteria" class="form-control mb-2" required>
+                        <select name="tipe_kriteria" class="form-control mb-2 tipe-kriteria" required>
+                            <option value="">-- Pilih --</option>
                             <option value="threshold">Threshold</option>
                             <option value="benefit">Benefit</option>
                         </select>
 
-                        <label>Minimal Benar</label>
-                        <input type="number" name="minimal_benar" class="form-control mb-2">
+                        <div class="field-threshold d-none">
+                            <label>Minimal Benar</label>
+                            <input type="number" name="minimal_benar" class="form-control mb-2">
+                        </div>
 
-                        <label>Bobot</label>
-                        <input type="number" name="bobot" class="form-control">
+                        <div class="field-benefit d-none">
+                            <label>Bobot (Max 100)</label>
+                            <input type="number" name="bobot" class="form-control mb-2" max="100">
+                        </div>
 
                     </div>
 
                     <div class="modal-footer">
-                        <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Batal
+                        </button>
+
                         <button class="btn btn-primary">Simpan</button>
                     </div>
 
@@ -201,35 +286,45 @@
 
                         <div class="modal-header">
                             <h5 class="modal-title">Edit Kategori Soal</h5>
-                            <button class="btn-close" data-bs-dismiss="modal"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
 
                         <div class="modal-body">
-
                             <label>Nama Kategori</label>
                             <input type="text" name="nama_kategori" value="{{ $kat->nama_kategori }}"
                                 class="form-control mb-2" required>
 
+
                             <label>Tipe Penilaian</label>
-                            <select name="tipe_kriteria" class="form-control mb-2">
+                            <select name="tipe_kriteria" class="form-control mb-2 tipe-kriteria"
+                                data-current="{{ $kat->tipe_kriteria }}">
                                 <option value="threshold" {{ $kat->tipe_kriteria == 'threshold' ? 'selected' : '' }}>
                                     Threshold
                                 </option>
-                                <option value="benefit" {{ $kat->tipe_kriteria == 'benefit' ? 'selected' : '' }}>Benefit
+                                <option value="benefit" {{ $kat->tipe_kriteria == 'benefit' ? 'selected' : '' }}>
+                                    Benefit
                                 </option>
                             </select>
 
-                            <label>Minimal Benar</label>
-                            <input type="number" name="minimal_benar" value="{{ $kat->minimal_benar }}"
-                                class="form-control mb-2">
+                            <div class="field-threshold d-none">
+                                <label>Minimal Benar</label>
+                                <input type="number" name="minimal_benar" value="{{ $kat->minimal_benar }}"
+                                    class="form-control mb-2">
+                            </div>
 
-                            <label>Bobot</label>
-                            <input type="number" name="bobot" value="{{ $kat->bobot }}" class="form-control">
+                            <div class="field-benefit d-none">
+                                <label>Bobot (Max 100)</label>
+                                <input type="number" name="bobot" value="{{ $kat->bobot }}"
+                                    class="form-control mb-2" max="100">
+                            </div>
 
                         </div>
 
                         <div class="modal-footer">
-                            <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                Batal
+                            </button>
+
                             <button class="btn btn-warning">Update</button>
                         </div>
 
@@ -251,7 +346,7 @@
 
                         <div class="modal-header">
                             <h5 class="modal-title">Tambah Soal — {{ $kat->nama_kategori }}</h5>
-                            <button class="btn-close" data-bs-dismiss="modal"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
 
                         <div class="modal-body">
@@ -276,7 +371,10 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                Batal
+                            </button>
+
                             <button class="btn btn-primary">Simpan</button>
                         </div>
 
@@ -303,7 +401,7 @@
 
                             <div class="modal-header">
                                 <h5 class="modal-title">Edit Soal</h5>
-                                <button class="btn-close" data-bs-dismiss="modal"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
 
                             <div class="modal-body">
@@ -330,7 +428,10 @@
                             </div>
 
                             <div class="modal-footer">
-                                <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    Batal
+                                </button>
+
                                 <button class="btn btn-warning">Update</button>
                             </div>
 
@@ -352,6 +453,33 @@
             document.querySelectorAll('#tabelSoal tbody tr').forEach(tr => {
                 tr.style.display = (val === "" || tr.dataset.kategori === val) ? "" : "none";
             });
+        });
+
+        function handleTipe(select) {
+            const modal = select.closest('.modal-content');
+            const threshold = modal.querySelector('.field-threshold');
+            const benefit = modal.querySelector('.field-benefit');
+
+            threshold.classList.add('d-none');
+            benefit.classList.add('d-none');
+
+            if (select.value === 'threshold') {
+                threshold.classList.remove('d-none');
+            }
+
+            if (select.value === 'benefit') {
+                benefit.classList.remove('d-none');
+            }
+        }
+
+        document.querySelectorAll('.tipe-kriteria').forEach(select => {
+            select.addEventListener('change', function() {
+                handleTipe(this);
+            });
+
+            if (select.dataset.current) {
+                handleTipe(select);
+            }
         });
     </script>
 

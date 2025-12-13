@@ -9,57 +9,56 @@ use Illuminate\Http\Request;
 
 class MasterSoalController extends Controller
 {
+    /* =====================================================
+     | INDEX
+     ===================================================== */
     public function index()
     {
         $kategori = KategoriSoal::with('soal')->get();
+
         return view('admin.master-soal.index', compact('kategori'));
     }
 
+    /* =====================================================
+     | KATEGORI
+     ===================================================== */
     public function storeKategori(Request $request)
     {
-        $request->validate([
-            'nama_kategori' => 'required',
-            'tipe_kriteria' => 'required|in:threshold,benefit',
-            'minimal_benar' => 'nullable|integer',
-            'bobot' => 'nullable|integer',
-        ]);
+        $data = $this->validateKategori($request);
 
-        KategoriSoal::create($request->all());
+        KategoriSoal::create($data);
 
         return back()->with('success', 'Kategori berhasil ditambahkan.');
     }
 
+
     public function updateKategori(Request $request, $id)
     {
         $kategori = KategoriSoal::findOrFail($id);
-        $kategori->update($request->all());
+
+        $data = $this->validateKategori($request, $kategori->id);
+
+        $kategori->update($data);
+
         return back()->with('success', 'Kategori berhasil diperbarui.');
     }
+
 
     public function deleteKategori($id)
     {
         KategoriSoal::findOrFail($id)->delete();
+
         return back()->with('success', 'Kategori berhasil dihapus.');
     }
 
-
-    // ================== CRUD SOAL ===================
-
+    /* =====================================================
+     | SOAL
+     ===================================================== */
     public function storeSoal(Request $request)
     {
-        $request->validate([
-            'kategori_id' => 'required',
-            'pertanyaan' => 'required',
-            'jawaban' => 'required',
-            'pilihan' => 'required|array',
-        ]);
+        $data = $this->validateSoal($request);
 
-        Soal::create([
-            'kategori_id' => $request->kategori_id,
-            'pertanyaan' => $request->pertanyaan,
-            'pilihan' => json_encode($request->pilihan),
-            'jawaban' => $request->jawaban,
-        ]);
+        Soal::create($data);
 
         return back()->with('success', 'Soal berhasil ditambahkan.');
     }
@@ -68,11 +67,9 @@ class MasterSoalController extends Controller
     {
         $soal = Soal::findOrFail($id);
 
-        $soal->update([
-            'pertanyaan' => $request->pertanyaan,
-            'pilihan' => json_encode($request->pilihan),
-            'jawaban' => $request->jawaban,
-        ]);
+        $data = $this->validateSoal($request, false);
+
+        $soal->update($data);
 
         return back()->with('success', 'Soal berhasil diperbarui.');
     }
@@ -80,6 +77,59 @@ class MasterSoalController extends Controller
     public function deleteSoal($id)
     {
         Soal::findOrFail($id)->delete();
+
         return back()->with('success', 'Soal berhasil dihapus.');
+    }
+
+    /* =====================================================
+     | VALIDATION HELPERS
+     ===================================================== */
+
+    private function validateKategori(Request $request, ?int $ignoreId = null): array
+    {
+        $validated = $request->validate([
+            'nama_kategori'  => 'required|string|max:255',
+            'tipe_kriteria'  => 'required|in:threshold,benefit',
+            'minimal_benar'  => 'required_if:tipe_kriteria,threshold|nullable|integer|min:0',
+            'bobot'          => 'required_if:tipe_kriteria,benefit|nullable|integer|min:1|max:100',
+        ]);
+
+        if ($validated['tipe_kriteria'] === 'threshold') {
+            $validated['bobot'] = null;
+            return $validated;
+        }
+
+        // ===============================
+        // VALIDASI TOTAL BOBOT <= 100
+        // ===============================
+        $totalBobot = KategoriSoal::where('tipe_kriteria', 'benefit')
+            ->when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId))
+            ->sum('bobot');
+
+        $totalSetelahTambah = $totalBobot + ($validated['bobot'] ?? 0);
+
+        if ($totalSetelahTambah > 100) {
+            abort(
+                back()->withErrors([
+                    'bobot' => 'Total bobot seluruh kategori tidak boleh lebih dari 100.'
+                ])->withInput()
+            );
+        }
+
+        $validated['minimal_benar'] = null;
+
+        return $validated;
+    }
+
+
+    private function validateSoal(Request $request, bool $requireKategori = true): array
+    {
+        return $request->validate([
+            'kategori_id' => $requireKategori ? 'required|exists:kategori_soal,id' : 'nullable',
+            'pertanyaan'  => 'required|string',
+            'pilihan'     => 'required|array|min:2',
+            'pilihan.*'   => 'required|string',
+            'jawaban'     => 'required|integer',
+        ]);
     }
 }

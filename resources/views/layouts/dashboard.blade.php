@@ -43,7 +43,12 @@
                             </div>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
-
+                            @if (Auth::user()->isSantri())
+                                <a class="dropdown-item" href="{{ route('santri.profile.index') }}">
+                                    <i class="fas fa-user me-1"></i> Profil Saya
+                                </a>
+                            @endif
+                            <hr>
                             <a class="dropdown-item" href="{{ route('logout') }}"
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 <i class="fas fa-sign-out-alt"></i> Logout
@@ -118,13 +123,24 @@
 
                             <li class="{{ request()->is('admin/master-soal*') ? 'active' : '' }}">
                                 <a href="{{ route('admin.master-soal.index') }}" class="nav-link">
-                                    <i class="fas fa-question-circle"></i> <span>Master Soal</span>
+                                    <i class="fas fa-question-circle"></i>
+                                    <span>Master Soal</span>
                                 </a>
                             </li>
 
                             <li class="{{ request()->is('admin/tahun-akademik*') ? 'active' : '' }}">
                                 <a href="{{ route('admin.tahun.index') }}" class="nav-link">
-                                    <i class="fas fa-calendar-alt"></i> <span>Tahun Akademik</span>
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span>Tahun Akademik</span>
+                                </a>
+                            </li>
+
+                            <li class="menu-header">Setting Administrasi</li>
+
+                            <li class="{{ request()->is('admin/pengaturan-pembayaran*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.pengaturan-pembayaran.index') }}" class="nav-link">
+                                    <i class="fas fa-cogs"></i>
+                                    <span>Pengaturan Pembayaran</span>
                                 </a>
                             </li>
                         @endif
