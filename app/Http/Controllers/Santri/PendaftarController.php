@@ -19,6 +19,16 @@ class PendaftarController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'nisn' => [
+                'required',
+                'digits:10',
+                'unique:data_diri_santris,nisn'
+            ],
+            'nama_lengkap' => 'required|string|max:255',
+            'email' => 'required|email',
+        ]);
+
         DataDiriSantri::create(array_merge(
             $request->all(),
             ['user_id' => Auth::id()]
@@ -45,10 +55,10 @@ class PendaftarController extends Controller
 
         $user = Auth::user();
         $user->update([
-            'name'     => $request->nama_lengkap,
-            'email'    => $request->email,
-            'no_telp'  => $request->no_telp,
-            'nik'      => $request->nik,
+            'name' => $request->nama_lengkap,
+            'email' => $request->email,
+            'no_telp' => $request->no_telp,
+            'nik' => $request->nik,
         ]);
 
         $data = DataDiriSantri::firstOrNew(['user_id' => $user->id]);
