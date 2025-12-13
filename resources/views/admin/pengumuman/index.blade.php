@@ -18,13 +18,13 @@
         @endif
 
         {{-- STATUS PENGUMUMAN --}}
-        <div class="alert {{ $pengumuman->status == 'sudah' ? 'alert-success' : 'alert-warning' }}">
+        <div class="alert {{ $pengumuman ? 'alert-success' : 'alert-warning' }}">
             Status Pengumuman:
-            <strong>{{ $pengumuman->status == 'sudah' ? 'Sudah Diumumkan' : 'Belum Diumumkan' }}</strong>
+            <strong>{{ $pengumuman ? 'Sudah Diumumkan' : 'Belum Diumumkan' }} untuk tahun akademik {{ $tahunAktif->tahun }}</strong>
         </div>
 
         {{-- TOMBOL UMUMKAN --}}
-        @if ($pengumuman->status == 'belum')
+        @if (!$pengumuman)
             <form action="{{ route('admin.pengumuman.umumkan') }}" method="POST">
                 @csrf
                 <button class="btn btn-primary mb-4">

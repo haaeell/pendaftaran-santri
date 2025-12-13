@@ -8,6 +8,7 @@ use App\Models\JadwalTesSantri;
 use App\Models\PembayaranSantri;
 use App\Models\PengaturanPembayaran;
 use App\Models\RekeningPembayaran;
+use App\Models\TimelineSeleksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,6 +31,10 @@ class JadwalSeleksiController extends Controller
         $hasilTes = HasilTesSantri::where('user_id', $user->id)
             ->with('kategori')
             ->get();
+
+             $timeline = TimelineSeleksi::where('tahun_akademik_id', $tahunAktif->id)
+        ->orderBy('mulai')
+        ->get();
 
         return view('santri.jadwal.index', compact(
             'user',

@@ -72,6 +72,7 @@ class DatabaseSeeder extends Seeder
         */
         DataDiriSantri::create([
             'user_id' => $santri->id,
+            'tahun_akademik_id' => $tahunAktif->id,
             'nama_lengkap' => 'Santri Contoh',
             'kabupaten_lahir' => 'Cirebon',
             'tanggal_lahir' => '2010-01-01',
@@ -258,16 +259,37 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-
         /*
-        |--------------------------------------------------------------------------
-        | SEEDER: PENGUMUMAN AWAL
-        |--------------------------------------------------------------------------
-        */
-        PengumumanHasil::create([
-            'tahun_akademik_id' => $tahunAktif->id,
-            'tanggal_pengumuman' => '2025-09-15',
-            'status' => 'belum',
+|--------------------------------------------------------------------------
+| SEEDER: TIMELINE SELEKSI
+|--------------------------------------------------------------------------
+*/
+        TimelineSeleksi::insert([
+            [
+                'tahun_akademik_id' => $tahunAktif->id,
+                'nama_gelombang' => 'Gelombang 1',
+                'mulai' => '2025-01-01',
+                'selesai' => '2025-03-31',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'tahun_akademik_id' => $tahunAktif->id,
+                'nama_gelombang' => 'Gelombang 2',
+                'mulai' => '2025-04-01',
+                'selesai' => '2025-06-30',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'tahun_akademik_id' => $tahunAktif->id,
+                'nama_gelombang' => 'Gelombang 3 (Terakhir)',
+                'mulai' => '2025-07-01',
+                'selesai' => '2025-08-15', // ⬅️ INI jadi deadline daftar ulang
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
+
     }
 }

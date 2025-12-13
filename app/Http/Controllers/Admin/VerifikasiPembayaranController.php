@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\DataDiriSantri;
 use App\Models\PembayaranSantri;
 use Illuminate\Http\Request;
 
@@ -23,12 +24,24 @@ class VerifikasiPembayaranController extends Controller
         return view('admin.pembayaran.index', compact('registrasi', 'daftarUlang'));
     }
 
-
     public function approve($id)
     {
-        PembayaranSantri::findOrFail($id)->update(['status' => 'diterima']);
-        return back()->with('success', 'Pembayaran telah disetujui.');
+        $pembayaran = PembayaranSantri::findOrFail($id);
+
+        $pembayaran->update([
+            'status' => 'diterima'
+        ]);
+
+        if ($pembayaran->jenis === 'daftar_ulang') {
+            DataDiriSantri::where('user_id', $pembayaran->user_id)
+                ->update([
+                    'status_seleksi' => 'diterima'
+                ]);
+        }
+
+        return back()->with('success', 'Pembayaran telah disetujui dan santri dinyatakan DITERIMA.');
     }
+
 
     public function reject($id, Request $request)
     {

@@ -183,6 +183,17 @@
         DASHBOARD SANTRI
 ===================================== --}}
     @if ($role === 'santri')
+        @if ($pengumumanSudah)
+            <div class="alert alert-info border-0 shadow-sm">
+                <i class="bi bi-megaphone-fill me-2"></i>
+                <strong>Pengumuman Seleksi</strong><br>
+                Pengumuman hasil seleksi Tahun Akademik
+                <strong>{{ $tahunAktif->tahun }}</strong>
+                telah diumumkan.
+                Pendaftaran santri baru sudah ditutup.
+            </div>
+        @endif
+
         <div class="page-title">Halo, {{ Auth::user()->name }}</div>
         <div class="sub-title">Berikut progress pendaftaran Anda.</div>
 
@@ -198,7 +209,7 @@
             <div class="step-item">
                 <span class="step-label">Upload Pembayaran</span>
                 <span
-                    class="badge-modern 
+                    class="badge-modern
                 {{ $pembayaran ? ($pembayaran->status == 'diterima' ? 'bg-success2' : 'bg-warning2') : 'bg-gray' }}">
                     {{ $pembayaran ? ucfirst($pembayaran->status) : 'Belum' }}
                 </span>

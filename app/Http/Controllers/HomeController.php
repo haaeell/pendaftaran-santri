@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PengumumanHasil;
+use App\Models\TahunAkademik;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class HomeController extends Controller
 {
@@ -22,12 +25,24 @@ class HomeController extends Controller
             }
         }
 
+        $tahunAktif = TahunAkademik::where('aktif', true)->first();
+
+        $pengumumanSudah = false;
+
+        if ($tahunAktif) {
+            $pengumumanSudah = PengumumanHasil::where('tahun_akademik_id', $tahunAktif->id)
+                ->where('status', 'sudah')
+                ->exists();
+        }
+
+
         return view('home', [
             'role' => $user->role,
             'dataDiri' => $user->dataDiri,
             'pembayaran' => $user->pembayaran()->latest()->first(),
             'jadwalTes' => $jadwalTes,
             'statusJadwalTes' => $statusJadwalTes,
+            'pengumumanSudah' => $pengumumanSudah,
 
             // ADMIN
             'totalPendaftar' => \App\Models\User::where('role', 'santri')->count(),

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\PengumumanHasil;
+use App\Models\TahunAkademik;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -11,41 +12,67 @@ class PengumumanController extends Controller
 {
     public function index()
     {
-        $pengumuman = PengumumanHasil::latest()->first();
-        $santri = User::where('role', 'santri')->whereHas('dataDiri')->with(['dataDiri', 'hasilTes'])->get();
+        $tahunAktif = TahunAkademik::where('aktif', 1)->firstOrFail();
 
-        return view('admin.pengumuman.index', compact('pengumuman', 'santri'));
+        $pengumuman = PengumumanHasil::where('tahun_akademik_id', $tahunAktif->id)->first();
+
+        $santri = User::where('role', 'santri')
+            ->whereHas('dataDiri', function ($q) use ($tahunAktif) {
+                $q->where('tahun_akademik_id', $tahunAktif->id);
+            })
+            ->with([
+                'dataDiri' => function ($q) use ($tahunAktif) {
+                    $q->where('tahun_akademik_id', $tahunAktif->id);
+                },
+            ])
+            ->get();
+
+        return view('admin.pengumuman.index', compact(
+            'pengumuman',
+            'santri',
+            'tahunAktif'
+        ));
     }
+
 
     public function umumkan()
     {
-        $pengumuman = PengumumanHasil::latest()->first();
+        $tahunAktif = TahunAkademik::where('aktif', 1)->firstOrFail();
 
-        if (!$pengumuman) {
-            return back()->with('error', 'Data pengumuman belum tersedia.');
-        }
+        $pengumuman = PengumumanHasil::firstOrCreate(
+            ['tahun_akademik_id' => $tahunAktif->id],
+            [
+                'status' => 'sudah',
+                'tanggal_pengumuman' => now(),
+            ]
+        );
 
-        $santri = User::where('role', 'santri')->whereHas('dataDiri')->with('hasilTes', 'dataDiri')->get();
+        $santri = User::where('role', 'santri')
+            ->whereHas('dataDiri')
+            ->with(['hasilTes', 'dataDiri'])
+            ->get();
 
         foreach ($santri as $s) {
             $hasil = $s->hasilTes;
 
-            if ($hasil->count() == 0) continue;
-            $lulusSemua = true;
-
-            foreach ($hasil as $h) {
-                if ($h->nilai < 75) {
-                    $lulusSemua = false;
-                    break;
-                }
+            if ($hasil->isEmpty()) {
+                continue;
             }
 
-            $s->dataDiri->status_seleksi = $lulusSemua ? 'lolos_seleksi' : 'tidak_lolos_seleksi';
-            $s->dataDiri->save();
+            $lulusSemua = $hasil->every(fn($h) => $h->nilai >= 75);
+
+            $s->dataDiri->update([
+                'status_seleksi' => $lulusSemua
+                    ? 'lolos_seleksi'
+                    : 'tidak_lolos_seleksi',
+            ]);
         }
 
-        $pengumuman->update(['status' => 'sudah']);
+        $pengumuman->update([
+            'status' => 'sudah',
+        ]);
 
-        return back()->with('success', 'Pengumuman berhasil diumumkan dan status peserta diperbarui.');
+        return back()->with('success', 'Pengumuman berhasil diumumkan dan status santri diperbarui.');
     }
+
 }

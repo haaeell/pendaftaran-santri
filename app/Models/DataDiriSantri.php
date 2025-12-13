@@ -10,6 +10,7 @@ class DataDiriSantri extends Model
 
     protected $fillable = [
         'user_id',
+        'tahun_akademik_id',
         'nama_lengkap',
         'kabupaten_lahir',
         'tanggal_lahir',

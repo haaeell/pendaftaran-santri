@@ -166,6 +166,31 @@
                 </tr>
             </table>
 
+            @if (isset($timeline) && $timeline->count() > 0)
+                <h5 class="fw-bold mb-3">Jadwal Seleksi</h5>
+
+                <table class="table table-bordered mb-4">
+                    <thead class="table-light">
+                        <tr>
+                            <th width="35%">Gelombang</th>
+                            <th>Mulai</th>
+                            <th>Selesai</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach ($timeline as $t)
+                            <tr>
+                                <td>{{ $t->nama_gelombang }}</td>
+                                <td>{{ \Carbon\Carbon::parse($t->mulai)->format('d M Y') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($t->selesai)->format('d M Y') }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
+
+
             <h6 class="fw-bold mt-4">Rekening Pembayaran</h6>
             <table class="table table-striped mt-2">
                 @foreach ($rekening as $r)
