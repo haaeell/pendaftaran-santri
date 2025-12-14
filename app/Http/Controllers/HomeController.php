@@ -18,12 +18,15 @@ class HomeController extends Controller
         $statusJadwalTes = 'belum';
 
         if ($jadwalTes) {
-            if (Carbon::parse($jadwalTes->tanggal_tes)->isPast()) {
+            if ($jadwalTes->sudah_tes) {
+                $statusJadwalTes = 'selesai';
+            } elseif (Carbon::parse($jadwalTes->tanggal_tes)->isPast()) {
                 $statusJadwalTes = 'kadaluarsa';
             } else {
                 $statusJadwalTes = 'aktif';
             }
         }
+
 
         $tahunAktif = TahunAkademik::where('aktif', true)->first();
 

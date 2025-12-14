@@ -217,10 +217,18 @@
 
             <div class="step-item">
                 <span class="step-label">Jadwal Tes</span>
-                <span class="badge-modern {{ $jadwalTes ? 'bg-info2' : 'bg-gray' }}">
-                    {{ $jadwalTes ? 'Tersedia' : 'Belum Ada' }}
-                </span>
+
+                @if ($statusJadwalTes === 'belum')
+                    <span class="badge-modern bg-gray">Belum Ada</span>
+                @elseif ($statusJadwalTes === 'aktif')
+                    <span class="badge-modern bg-primary2">Belum Mengikuti Tes</span>
+                @elseif ($statusJadwalTes === 'selesai')
+                    <span class="badge-modern bg-success2">Sudah Mengikuti Tes</span>
+                @elseif ($statusJadwalTes === 'kadaluarsa')
+                    <span class="badge-modern bg-warning2">Tidak Hadir</span>
+                @endif
             </div>
+
         </div>
     @endif
 
