@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\PengumumanHasil;
+use App\Models\TahunAkademik;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
@@ -64,6 +66,22 @@ class RegisterController extends Controller
                 'password.confirmed' => 'Konfirmasi password tidak cocok.',
             ]
         );
+    }
+
+    public function showRegistrationForm()
+    {
+        $tahunAktif = TahunAkademik::where('aktif', true)->first();
+
+        $pendaftaranDitutup = false;
+
+        if ($tahunAktif) {
+            $pendaftaranDitutup = PengumumanHasil::where(
+                'tahun_akademik_id',
+                $tahunAktif->id
+            )->exists();
+        }
+
+        return view('auth.register', compact('pendaftaranDitutup'));
     }
 
 

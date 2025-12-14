@@ -54,9 +54,21 @@ class PendaftarController extends Controller
     public function update(Request $request)
     {
         $request->validate([
+            'nisn' => [
+                'required',
+                'digits:10',
+                'unique:data_diri_santri,nisn'
+            ],
             'nama_lengkap' => 'required',
             'jenis_kelamin' => 'required|in:L,P',
             'pendidikan_tujuan' => 'required'
+        ], [
+            'nisn.required' => 'NISN harus diisi.',
+            'nisn.digits' => 'NISN harus terdiri dari 10 angka.',
+            'nisn.unique' => 'NISN sudah terdaftar.',
+            'nama_lengkap.required' => 'Nama lengkap harus diisi.',
+            'jenis_kelamin.required' => 'Jenis kelamin harus diisi.',
+            'pendidikan_tujuan.required' => 'Pendidikan tujuan harus diisi.',
         ]);
 
         $user = Auth::user();

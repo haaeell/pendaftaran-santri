@@ -17,7 +17,6 @@
                         <th>Nama Peserta</th>
                         <th>No. Pendaftaran</th>
 
-                        {{-- LOOPING KATEGORI MENJADI TH --}}
                         @foreach ($kategori as $kat)
                             <th>{{ $kat->nama_kategori }}</th>
                         @endforeach
@@ -38,7 +37,6 @@
                             <td>{{ $s->name }}</td>
                             <td>{{ $s->id }}</td>
 
-                            {{-- LOOP SETIAP KATEGORI UNTUK MENAMPILKAN NILAI --}}
                             @foreach ($kategori as $kat)
                                 @php
                                     $hasil = $hasilTes[$kat->id] ?? null;

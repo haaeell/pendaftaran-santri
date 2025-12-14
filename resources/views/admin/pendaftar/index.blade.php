@@ -18,7 +18,6 @@
                 @php
                     $tabs = [
                         '' => 'Semua',
-                        'belum_diterima' => 'Belum Diproses',
                         'lolos_seleksi' => 'Lolos Seleksi',
                         'tidak_lolos_seleksi' => 'Tidak Lolos',
                         'diterima' => 'Diterima',

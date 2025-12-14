@@ -66,7 +66,7 @@
                 </div>
 
                 {{-- LOLOS SELEKSI -> TAMPILKAN DAFTAR ULANG --}}
-            @elseif ($status === 'lolos_seleksi')
+            @elseif ($status === 'lolos_seleksi' || $status === 'diterima')
                 <h5 class="fw-bold mt-4 mb-3">Informasi Pembayaran Daftar Ulang</h5>
 
                 <table class="table table-bordered">
