@@ -34,7 +34,7 @@
                         @endphp
 
                         <tr>
-                            <td>{{ $i + 1 }}</td>
+                            <td>{{ $s->registration_id }}</td>
                             <td>{{ $s->name }}</td>
                             <td>{{ $s->id }}</td>
 

@@ -32,10 +32,6 @@ class JadwalSeleksiController extends Controller
             ->with('kategori')
             ->get();
 
-             $timeline = TimelineSeleksi::where('tahun_akademik_id', $tahunAktif->id)
-        ->orderBy('mulai')
-        ->get();
-
         return view('santri.jadwal.index', compact(
             'user',
             'biaya',

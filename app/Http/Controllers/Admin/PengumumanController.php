@@ -63,7 +63,7 @@ class PengumumanController extends Controller
 
             $s->dataDiri->update([
                 'status_seleksi' => $lulusSemua
-                    ? 'lolos_seleksi'
+                    ? 'diterima'
                     : 'tidak_lolos_seleksi',
             ]);
         }
@@ -74,5 +74,4 @@ class PengumumanController extends Controller
 
         return back()->with('success', 'Pengumuman berhasil diumumkan dan status santri diperbarui.');
     }
-
 }

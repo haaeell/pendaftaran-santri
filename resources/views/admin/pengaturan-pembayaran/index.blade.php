@@ -364,7 +364,7 @@
         <div class="modal fade" id="modalDeleteTimeline{{ $t->id }}">
             <div class="modal-dialog modal-dialog-centered">
                 <form class="modal-content" method="POST"
-                    action="{{ route('admin.pengaturan-pembayaran.timeline.destroy', $t->id) }}">
+                    action="{{ route('admin.pengaturan-pembayaran.timeline.delete', $t->id) }}">
                     @csrf @method('DELETE')
 
                     <div class="modal-header">

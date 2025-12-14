@@ -49,6 +49,7 @@ class HomeController extends Controller
             'menunggu' => \App\Models\PembayaranSantri::where('status', 'menunggu')->count(),
             'terverifikasi' => \App\Models\PembayaranSantri::where('status', 'diterima')->count(),
             'totalSoal' => \App\Models\Soal::count(),
+            'tahunAktif' => $tahunAktif
         ]);
     }
 }

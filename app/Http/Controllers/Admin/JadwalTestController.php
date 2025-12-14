@@ -5,21 +5,47 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\PembayaranSantri;
 use App\Models\JadwalTesSantri;
+use App\Models\TahunAkademik;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class JadwalTestController extends Controller
 {
     public function index()
     {
-        $santri = PembayaranSantri::where('jenis', 'registrasi')
-            ->where('status', 'diterima')
-            ->with('user')
+        $tahunAktif = TahunAkademik::where('aktif', true)->firstOrFail();
+
+        $jadwalSemua = JadwalTesSantri::whereHas('user.dataDiri', function ($q) use ($tahunAktif) {
+            $q->where('tahun_akademik_id', $tahunAktif->id);
+        })->with(['user.dataDiri', 'user.hasilTes'])
             ->get();
 
-        $jadwal = JadwalTesSantri::all()->keyBy('user_id');
+        foreach ($jadwalSemua as $j) {
+            $user = $j->user;
 
-        return view('admin.jadwal.index', compact('santri', 'jadwal'));
+            if ($user->hasilTes()->exists()) {
+                continue;
+            }
+
+            if (Carbon::now()->greaterThan(Carbon::parse($j->waktu_selesai))) {
+                $user->dataDiri->update([
+                    'status_seleksi' => 'gugur'
+                ]);
+            }
+        }
+
+        $santri = PembayaranSantri::where('jenis', 'registrasi')
+            ->where('status', 'diterima')
+            ->whereHas('user.dataDiri', function ($q) use ($tahunAktif) {
+                $q->where('tahun_akademik_id', $tahunAktif->id);
+            })
+            ->with(['user.dataDiri'])
+            ->get();
+
+        $jadwal = $jadwalSemua->keyBy('user_id');
+
+        return view('admin.jadwal.index', compact('santri', 'jadwal', 'tahunAktif'));
     }
 
     public function store(Request $request)

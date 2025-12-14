@@ -33,7 +33,7 @@
                         <tr>
                             <td>{{ $key + 1 }}</td>
                             <td>{{ $user->name }}</td>
-                            <td>{{ $user->id }}</td>
+                            <td>{{ $p->registration_id }}</td>
                             <td>{{ $user->dataDiri->pendidikan_tujuan ?? '-' }}</td>
 
                             <td>
@@ -66,11 +66,6 @@
             </table>
         </div>
     </div>
-
-
-    {{-- ========================================================= --}}
-    {{--  KUMPULAN MODAL DITARUH DI BAWAH (TIDAK DI DALAM TABLE)   --}}
-    {{-- ========================================================= --}}
 
     @foreach ($santri as $p)
         @php $user = $p->user; @endphp

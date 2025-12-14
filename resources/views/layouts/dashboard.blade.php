@@ -155,50 +155,25 @@
                             </li>
 
                             <hr>
+                            <li class="{{ request()->is('santri/pendaftar*') ? 'active' : '' }}">
+                                <a href="{{ route('santri.pendaftar.index') }}" class="nav-link">
+                                    <i class="fas fa-user-edit"></i> <span>Data Pendaftar</span>
+                                </a>
+                            </li>
 
-                            @php
-                                $tahunAktif = \App\Models\TahunAkademik::where('aktif', 1)->first();
-
-                                $pengumumanSudahAda = \App\Models\PengumumanHasil::where(
-                                    'tahun_akademik_id',
-                                    $tahunAktif?->id,
-                                )
-                                    ->where('status', 'sudah')
-                                    ->exists();
-
-                                $dataDiriAktif =
-                                    Auth::user()->dataDiri &&
-                                    Auth::user()->dataDiri->tahun_akademik_id === $tahunAktif?->id;
-                            @endphp
-
-                            @if ($dataDiriAktif && !$pengumumanSudahAda)
-                                <li class="{{ request()->is('santri/pendaftar*') ? 'active' : '' }}">
-                                    <a href="{{ route('santri.pendaftar.index') }}" class="nav-link">
-                                        <i class="fas fa-user-edit"></i> <span>Data Pendaftar</span>
-                                    </a>
-                                </li>
-
+                            @if (Auth::user()->dataDiri)
                                 <li class="{{ request()->is('santri/jadwal*') ? 'active' : '' }}">
                                     <a href="{{ route('santri.jadwal.index') }}" class="nav-link">
                                         <i class="fas fa-calendar-check"></i> <span>Jadwal Seleksi</span>
                                     </a>
                                 </li>
-                                 <li class="{{ request()->is('santri/status*') ? 'active' : '' }}">
-                                    <a href="{{ route('santri.status.index') }}" class="nav-link">
-                                        <i class="fas fa-info-circle"></i> <span>Status Seleksi</span>
-                                    </a>
-                                </li>
-                            @endif
 
-
-                            @if ($dataDiriAktif && $pengumumanSudahAda)
                                 <li class="{{ request()->is('santri/status*') ? 'active' : '' }}">
                                     <a href="{{ route('santri.status.index') }}" class="nav-link">
                                         <i class="fas fa-info-circle"></i> <span>Status Seleksi</span>
                                     </a>
                                 </li>
                             @endif
-
                         @endif
 
                     </ul>

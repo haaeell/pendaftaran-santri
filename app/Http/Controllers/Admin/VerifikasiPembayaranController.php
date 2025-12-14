@@ -5,25 +5,37 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\DataDiriSantri;
 use App\Models\PembayaranSantri;
+use App\Models\TahunAkademik;
 use Illuminate\Http\Request;
 
 class VerifikasiPembayaranController extends Controller
 {
     public function index()
     {
-        $registrasi = PembayaranSantri::with(['user', 'rekening'])
+        $tahunAktif = TahunAkademik::where('aktif', true)->firstOrFail();
+
+        $registrasi = PembayaranSantri::with(['user.dataDiri', 'rekening'])
             ->where('jenis', 'registrasi')
+            ->whereHas('user.dataDiri', function ($q) use ($tahunAktif) {
+                $q->where('tahun_akademik_id', $tahunAktif->id);
+            })
             ->latest()
             ->get();
 
-        $daftarUlang = PembayaranSantri::with(['user', 'rekening'])
+        $daftarUlang = PembayaranSantri::with(['user.dataDiri', 'rekening'])
             ->where('jenis', 'daftar_ulang')
+            ->whereHas('user.dataDiri', function ($q) use ($tahunAktif) {
+                $q->where('tahun_akademik_id', $tahunAktif->id);
+            })
             ->latest()
             ->get();
 
-        return view('admin.pembayaran.index', compact('registrasi', 'daftarUlang'));
+        return view('admin.pembayaran.index', compact(
+            'registrasi',
+            'daftarUlang',
+            'tahunAktif'
+        ));
     }
-
     public function approve($id)
     {
         $pembayaran = PembayaranSantri::findOrFail($id);

@@ -20,7 +20,8 @@
         {{-- STATUS PENGUMUMAN --}}
         <div class="alert {{ $pengumuman ? 'alert-success' : 'alert-warning' }}">
             Status Pengumuman:
-            <strong>{{ $pengumuman ? 'Sudah Diumumkan' : 'Belum Diumumkan' }} untuk tahun akademik {{ $tahunAktif->tahun }}</strong>
+            <strong>{{ $pengumuman ? 'Sudah Diumumkan' : 'Belum Diumumkan' }} untuk tahun akademik
+                {{ $tahunAktif->tahun }}</strong>
         </div>
 
         {{-- TOMBOL UMUMKAN --}}
@@ -50,21 +51,21 @@
                         <tr>
                             <td>{{ $i + 1 }}</td>
                             <td>{{ $s->name }}</td>
-                            <td>{{ $s->id }}</td>
+                            <td>{{ $s->registration_id }}</td>
 
                             <td>
                                 @php $st = $s->dataDiri->status_seleksi; @endphp
 
                                 @if ($st == 'belum_diterima')
-                                    <span class="badge bg-secondary">Belum Diproses</span>
+                                    <span class="badge bg-secondary  text-white">Belum Diproses</span>
                                 @elseif ($st == 'lolos_seleksi')
-                                    <span class="badge bg-success">Lolos Seleksi</span>
+                                    <span class="badge bg-success  text-white">Lolos Seleksi</span>
                                 @elseif ($st == 'tidak_lolos_seleksi')
-                                    <span class="badge bg-danger">Tidak Lolos</span>
+                                    <span class="badge bg-danger  text-white">Tidak Lolos</span>
                                 @elseif ($st == 'diterima')
-                                    <span class="badge bg-primary">Diterima</span>
+                                    <span class="badge bg-success text-white">Diterima</span>
                                 @elseif ($st == 'gugur')
-                                    <span class="badge bg-dark">Gugur</span>
+                                    <span class="badge bg-dark  text-white">Gugur</span>
                                 @endif
                             </td>
                         </tr>

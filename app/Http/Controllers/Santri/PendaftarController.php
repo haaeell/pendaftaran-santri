@@ -123,6 +123,9 @@ class PendaftarController extends Controller
             $data->foto_kk = $path;
         }
 
+        $tahunAktif = TahunAkademik::where('aktif', 1)->firstOrFail();
+        $data->tahun_akademik_id = $tahunAktif->id;
+
         $data->save();
         return redirect()->route('santri.jadwal.index')->with('success', 'Data berhasil disimpan.');
     }
