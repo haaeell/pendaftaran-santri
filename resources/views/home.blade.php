@@ -228,7 +228,6 @@
                     <span class="badge-modern bg-warning2">Tidak Hadir</span>
                 @endif
             </div>
-
         </div>
     @endif
 

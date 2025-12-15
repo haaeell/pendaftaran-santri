@@ -16,11 +16,10 @@ class HomeController extends Controller
         $jadwalTes = $user->jadwalTes;
 
         $statusJadwalTes = 'belum';
-
         if ($jadwalTes) {
-            if ($jadwalTes->sudah_tes) {
+            if ($jadwalTes->sudah_mulai) {
                 $statusJadwalTes = 'selesai';
-            } elseif (Carbon::parse($jadwalTes->tanggal_tes)->isPast()) {
+            } elseif (Carbon::parse($jadwalTes->waktu_selesai)->isPast()) {
                 $statusJadwalTes = 'kadaluarsa';
             } else {
                 $statusJadwalTes = 'aktif';

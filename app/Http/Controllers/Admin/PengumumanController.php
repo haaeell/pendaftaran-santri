@@ -63,7 +63,7 @@ class PengumumanController extends Controller
 
             $s->dataDiri->update([
                 'status_seleksi' => $lulusSemua
-                    ? 'diterima'
+                    ? 'lolos_seleksi'
                     : 'tidak_lolos_seleksi',
             ]);
         }

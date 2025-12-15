@@ -18,7 +18,7 @@
                 @php
                     $tabs = [
                         '' => 'Semua',
-                        'lolos_seleksi' => 'Lolos Seleksi',
+                        'lolos_seleksi' => 'Lolos Tes',
                         'tidak_lolos_seleksi' => 'Tidak Lolos',
                         'diterima' => 'Diterima',
                     ];
