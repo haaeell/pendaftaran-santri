@@ -63,7 +63,7 @@
                                             'belum_diterima' => 'secondary',
                                             'lolos_seleksi' => 'success',
                                             'tidak_lolos_seleksi' => 'danger',
-                                            'diterima' => 'primary',
+                                            'diterima' => 'success',
                                         ][$st];
                                     @endphp
 
@@ -206,8 +206,18 @@
                                         <tr>
                                             <td>Status Seleksi</td>
                                             <td>
-                                                <span class="badge bg-primary  text-white">
-                                                    {{ strtoupper(str_replace('_', ' ', $d->status_seleksi)) }}
+                                                @php
+                                                    $st = $d->status_seleksi;
+                                                    $badge = [
+                                                        'belum_diterima' => 'secondary',
+                                                        'lolos_seleksi' => 'success',
+                                                        'tidak_lolos_seleksi' => 'danger',
+                                                        'diterima' => 'success',
+                                                    ][$st];
+                                                @endphp
+
+                                                <span class="badge bg-{{ $badge }} text-white">
+                                                    {{ strtoupper(str_replace('_', ' ', $st)) }}
                                                 </span>
                                             </td>
                                         </tr>

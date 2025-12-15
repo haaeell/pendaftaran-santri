@@ -166,7 +166,7 @@ Route::middleware('auth')
             ->group(function () {
                 Route::get('/', 'index')->name('index');
                 Route::post('/store', 'store')->name('store');
-                Route::post('/update/{id}', 'update')->name('update');
+                Route::put('/update/{id}', 'update')->name('update');
                 Route::delete('/delete/{id}', 'destroy')->name('delete');
                 Route::post('/aktifkan/{id}', 'aktifkan')->name('aktifkan');
             });

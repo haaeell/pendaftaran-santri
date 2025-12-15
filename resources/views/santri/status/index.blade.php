@@ -12,7 +12,7 @@
             'belum_diterima' => 'secondary',
             'tidak_lolos_seleksi' => 'danger',
             'lolos_seleksi' => 'success',
-            'diterima' => 'primary',
+            'diterima' => 'success',
         ][$status];
 
         $label = [
@@ -142,7 +142,7 @@
 
                 {{-- SUDAH DITERIMA --}}
             @elseif ($status === 'diterima')
-                <div class="alert alert-primary text-center fw-bold fs-5">
+                <div class="alert alert-success text-center fw-bold fs-5">
                     SELAMAT! ANDA RESMI MENJADI SANTRI BARU.
                 </div>
             @endif
