@@ -265,7 +265,7 @@
                         </div>
                     </div>
                 @else
-                    <div class="alert alert-danger">Waktu tes telah berakhir.</div>
+                    <div class="alert alert-danger">Waktu tes telah berakhir anda dinyatakan gugur.</div>
                 @endif
 
             @endif
