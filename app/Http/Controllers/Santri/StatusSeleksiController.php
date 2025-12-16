@@ -41,6 +41,8 @@ class StatusSeleksiController extends Controller
             ->where('status', 'sudah')
             ->first();
 
+        $statusSeleksi = $dataDiri->status_seleksi;
+
         return view('santri.status.index', compact(
             'user',
             'pembayaran',
@@ -49,6 +51,7 @@ class StatusSeleksiController extends Controller
             'biayaDaftarUlang',
             'rekening',
             'pembayaranDU',
+            'statusSeleksi'
         ));
     }
 }
