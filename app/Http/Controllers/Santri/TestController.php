@@ -47,8 +47,8 @@ class TestController extends Controller
         $jawabanUser  = $request->jawaban ?? [];
         $kategoriList = KategoriSoal::with('soal')->get();
 
+        $nilaiAkhir = 0;
         $gagalThreshold = false;
-        $nilaiAkhir     = 0;
 
         foreach ($kategoriList as $kategori) {
 
@@ -57,11 +57,12 @@ class TestController extends Controller
 
             foreach ($kategori->soal as $soal) {
 
-                $userAnswer = $jawabanUser[$soal->id] ?? null;
-                $pilihan    = $soal->pilihan;
+                $jawabanUserIndex = $jawabanUser[$soal->id] ?? null;
+                $indexBenar       = (int) $soal->jawaban;
 
-                $indexBenar = array_search($soal->jawaban, $pilihan);
-                $status     = ($userAnswer == $indexBenar) ? 'betul' : 'salah';
+                $status = ($jawabanUserIndex !== null && (int)$jawabanUserIndex === $indexBenar)
+                    ? 'betul'
+                    : 'salah';
 
                 if ($status === 'betul') {
                     $jumlahBenar++;
@@ -69,10 +70,10 @@ class TestController extends Controller
 
                 $detailJawaban[] = [
                     'soal_id'            => $soal->id,
-                    'jawaban_user'       => $userAnswer,
-                    'jawaban_user_text'  => $pilihan[$userAnswer] ?? null,
+                    'jawaban_user'       => $jawabanUserIndex,
+                    'jawaban_user_text'  => $soal->pilihan[$jawabanUserIndex] ?? null,
                     'jawaban_benar'      => $indexBenar,
-                    'jawaban_benar_text' => $soal->jawaban,
+                    'jawaban_benar_text' => $soal->pilihan[$indexBenar] ?? null,
                     'status'             => $status,
                 ];
             }
@@ -92,7 +93,7 @@ class TestController extends Controller
                 !$gagalThreshold &&
                 $kategori->tipe_kriteria === 'benefit'
             ) {
-                $nilaiAkhir += ($nilaiPersen * $kategori->bobot);
+                $nilaiAkhir += ($nilaiPersen * $kategori->bobot / 100);
             }
 
             HasilTesSantri::updateOrCreate(
@@ -121,19 +122,18 @@ class TestController extends Controller
         }
 
         $gagalBenefit = false;
+
         if (!$gagalThreshold && $nilaiAkhir < 75) {
             $gagalBenefit = true;
         }
 
-        $dataDiri = $user->dataDiri;
-
         if ($gagalThreshold || $gagalBenefit) {
-            $dataDiri->update([
+            $user->dataDiri->update([
                 'status_seleksi' => 'tidak_lolos_seleksi',
                 'nilai_akhir'    => $nilaiAkhir,
             ]);
         } else {
-            $dataDiri->update([
+            $user->dataDiri->update([
                 'status_seleksi' => 'lolos_seleksi',
                 'nilai_akhir'    => $nilaiAkhir,
             ]);

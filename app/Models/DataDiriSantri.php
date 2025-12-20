@@ -42,6 +42,7 @@ class DataDiriSantri extends Model
         'info_lainnya',
         'pendidikan_tujuan',
         'status_seleksi',
+        'nilai_akhir',
     ];
 
     protected $casts = [
