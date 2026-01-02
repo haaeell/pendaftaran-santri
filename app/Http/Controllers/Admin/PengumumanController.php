@@ -49,7 +49,7 @@ class PengumumanController extends Controller
 
         $santri = User::where('role', 'santri')
             ->whereHas('dataDiri')
-            ->with(['hasilTes.kategori', 'dataDiri'])
+            ->with(['hasilTes', 'dataDiri'])
             ->get();
 
         foreach ($santri as $s) {
