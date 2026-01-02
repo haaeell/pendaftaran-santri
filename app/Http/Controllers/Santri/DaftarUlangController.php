@@ -15,7 +15,6 @@ class DaftarUlangController extends Controller
     {
         $user = Auth::user();
 
-        // hanya bisa daftar ulang jika lolos seleksi
         if ($user->dataDiri->status_seleksi != 'lolos_seleksi') {
             return back()->with('error', 'Anda belum dinyatakan lolos seleksi.');
         }

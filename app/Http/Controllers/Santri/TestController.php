@@ -129,12 +129,10 @@ class TestController extends Controller
 
         if ($gagalThreshold || $gagalBenefit) {
             $user->dataDiri->update([
-                'status_seleksi' => 'tidak_lolos_seleksi',
                 'nilai_akhir'    => $nilaiAkhir,
             ]);
         } else {
             $user->dataDiri->update([
-                'status_seleksi' => 'lolos_seleksi',
                 'nilai_akhir'    => $nilaiAkhir,
             ]);
         }
