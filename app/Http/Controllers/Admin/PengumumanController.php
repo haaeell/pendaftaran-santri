@@ -49,22 +49,41 @@ class PengumumanController extends Controller
 
         $santri = User::where('role', 'santri')
             ->whereHas('dataDiri')
-            ->with(['hasilTes', 'dataDiri'])
+            ->with(['hasilTes.kategori', 'dataDiri'])
             ->get();
 
         foreach ($santri as $s) {
-            $hasil = $s->hasilTes;
 
-            if ($hasil->isEmpty()) {
-                continue;
+            $hasilTes = $s->hasilTes;
+            if ($hasilTes->isEmpty()) continue;
+
+            $gagalThreshold = false;
+            $nilaiAkhir = 0;
+
+            foreach ($hasilTes as $hasil) {
+                $kategori = $hasil->kategori;
+
+                if ($kategori->tipe_kriteria === 'threshold') {
+                    if ($hasil->jumlah_benar < $kategori->minimal_benar) {
+                        $gagalThreshold = true;
+                    }
+                }
+
+                if (
+                    !$gagalThreshold &&
+                    $kategori->tipe_kriteria === 'benefit'
+                ) {
+                    $nilaiAkhir += ($hasil->nilai * $kategori->bobot / 100);
+                }
             }
 
-            $lulusSemua = $hasil->every(fn($h) => $h->nilai >= 75);
+            $lulus = !$gagalThreshold && $nilaiAkhir >= 75;
 
             $s->dataDiri->update([
-                'status_seleksi' => $lulusSemua
+                'status_seleksi' => $lulus
                     ? 'lolos_seleksi'
                     : 'tidak_lolos_seleksi',
+                'nilai_akhir' => $nilaiAkhir,
             ]);
         }
 
@@ -72,6 +91,6 @@ class PengumumanController extends Controller
             'status' => 'sudah',
         ]);
 
-        return back()->with('success', 'Pengumuman berhasil diumumkan dan status santri diperbarui.');
+        return back()->with('success', 'Pengumuman berhasil diumumkan.');
     }
 }
