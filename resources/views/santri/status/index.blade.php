@@ -32,12 +32,13 @@
     <div class="d-flex justify-content-center">
         <div class="card shadow-lg p-4" style="width: 1100px; max-width: 100%;">
 
-            {{-- HEADER STATUS --}}
-            <div class="text-center mb-4">
-                <div class="p-2 text-white fw-bold bg-{{ $color }}" style="border-radius: 6px;">
-                    {{ $label }}
+            @if ($pengumuman)
+                <div class="text-center mb-4">
+                    <div class="p-2 text-white fw-bold bg-{{ $color }}" style="border-radius: 6px;">
+                        {{ $label }}
+                    </div>
                 </div>
-            </div>
+            @endif
 
             {{-- IDENTITAS SANTRI --}}
             <table class="table table-bordered mb-4">
@@ -54,8 +55,6 @@
                     <td>{{ $user->registration_id }}</td>
                 </tr>
             </table>
-
-            {{-- ===================== LOGIC UTAMA ===================== --}}
 
             {{-- JIKA BELUM ADA PENGUMUMAN --}}
             @if (!$pengumuman)
