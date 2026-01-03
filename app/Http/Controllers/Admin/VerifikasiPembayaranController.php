@@ -44,7 +44,7 @@ class VerifikasiPembayaranController extends Controller
             'status' => 'diterima'
         ]);
 
-        if ($pembayaran->jenis === 'daftar_ulang') {
+        if ($pembayaran->jenis == 'registrasi') {
             DataDiriSantri::where('user_id', $pembayaran->user_id)
                 ->update([
                     'status_seleksi' => 'diterima'
