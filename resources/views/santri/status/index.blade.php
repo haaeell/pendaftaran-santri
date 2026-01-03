@@ -146,6 +146,8 @@
                                 </select>
                             </div>
 
+                            <input type="hidden" name="nominal_bayar" value="{{ $biayaDaftarUlang->nominal }}">
+
                             <div class="mb-3">
                                 <label class="fw-bold">Upload Bukti Pembayaran</label>
                                 <input type="file" name="bukti_transfer" class="form-control" required>
