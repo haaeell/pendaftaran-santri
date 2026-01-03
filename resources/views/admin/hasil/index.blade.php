@@ -72,11 +72,18 @@
                             </td>
 
                             <td>
-                                @if ($status === 'lolos_seleksi')
-                                    <span class="badge bg-success">Lolos Seleksi</span>
-                                @else
-                                    <span class="badge bg-danger">Tidak Lolos</span>
-                                @endif
+                                @php
+                                    $badge = [
+                                        'belum_diterima' => 'secondary',
+                                        'lolos_seleksi' => 'success',
+                                        'tidak_lolos_seleksi' => 'danger',
+                                        'diterima' => 'success',
+                                    ][$status];
+                                @endphp
+
+                                <span class="badge bg-{{ $badge }} text-white">
+                                    {{ strtoupper(str_replace('_', ' ', $status)) }}
+                                </span>
                             </td>
                         </tr>
                     @endforeach
