@@ -137,7 +137,17 @@
     @if ($role === 'admin')
         <div class="page-title">Selamat Datang, Admin</div>
         <div class="sub-title">Berikut ringkasan aktivitas pendaftaran & seleksi.</div>
-
+        @if ($tahunAktif)
+            <div class="sub-title mb-3">
+                Tahun Akademik Aktif:
+                <strong>{{ $tahunAktif->tahun }}</strong>
+            </div>
+        @else
+            <div class="alert alert-warning border-0 shadow-sm mb-3">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                Tahun akademik belum diaktifkan
+            </div>
+        @endif
         <div class="row g-4">
 
             <div class="col-md-3">
@@ -171,8 +181,6 @@
                     <div class="dash-value">{{ $totalSoal ?? 0 }}</div>
                 </div>
             </div>
-
-
         </div>
     @endif
 
