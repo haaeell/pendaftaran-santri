@@ -94,32 +94,6 @@
 
 
             <hr class="my-4">
-
-            <h5 class="fw-bold">Status Seleksi Akhir</h5>
-
-            @php $status = $user->dataDiri->status_seleksi; @endphp
-
-            @if ($status == 'belum_diterima')
-                <div class="alert alert-secondary text-center">
-                    Menunggu keputusan admin.
-                </div>
-            @elseif ($status == 'lolos_seleksi')
-                <div class="alert alert-success text-center fw-bold fs-5">
-                    LOLOS — Selamat! Anda lolos seleksi.
-                </div>
-            @elseif ($status == 'tidak_lolos_seleksi')
-                <div class="alert alert-danger text-center fw-bold fs-5">
-                    BELUM LOLOS — Tetap semangat!
-                </div>
-            @elseif ($status == 'diterima')
-                <div class="alert alert-primary text-center fw-bold fs-5">
-                    DITERIMA — Selamat bergabung di pesantren.
-                </div>
-            @elseif ($status == 'gugur')
-                <div class="alert alert-dark text-center fw-bold fs-5">
-                    GUGUR — Tetap semangat.
-                </div>
-            @endif
         @else
             {{-- ======================== BELUM TEST :: TAMPIL NORMAL ======================== --}}
 
