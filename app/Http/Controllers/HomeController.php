@@ -21,21 +21,16 @@ class HomeController extends Controller
         $jadwalTes = null;
         $statusJadwalTes = 'belum';
 
-        if ($tahunAktif && $user->role === 'santri') {
+        if ($user->role === 'santri') {
 
             $dataDiri = $user->dataDiri()
-                ->where('tahun_akademik_id', $tahunAktif->id)
                 ->first();
 
             $pembayaran = $user->pembayaran()
-                ->whereHas('user.dataDiri', function ($q) use ($tahunAktif) {
-                    $q->where('tahun_akademik_id', $tahunAktif->id);
-                })
                 ->latest()
                 ->first();
 
             $jadwalTes = $user->jadwalTes()
-                ->where('tahun_akademik_id', $tahunAktif->id)
                 ->first();
 
             if ($jadwalTes) {
