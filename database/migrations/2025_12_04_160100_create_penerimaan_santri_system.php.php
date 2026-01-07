@@ -239,14 +239,13 @@ return new class extends Migration
             $table->foreignId('tahun_akademik_id')->constrained('tahun_akademik')->cascadeOnDelete();
             $table->date('tanggal_pengumuman');
             $table->enum('status', ['belum', 'sudah'])->default('belum');
-            $table->text('note')->nullable()->after('status');
+            $table->text('note')->nullable();
             $table->timestamps();
         });
 
         Schema::table('data_diri_santri', function (Blueprint $table) {
             $table->foreignId('tahun_akademik_id')
                 ->nullable()
-                ->after('user_id')
                 ->constrained('tahun_akademik')
                 ->cascadeOnDelete();
         });
