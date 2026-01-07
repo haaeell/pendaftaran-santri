@@ -202,6 +202,58 @@
             </div>
         @endif
 
+        @if ($role === 'santri' && count($notifications))
+            <div class="card shadow-sm border-0 p-3 mb-4" style="border-radius: 18px;">
+                <h6 class="fw-bold mb-2">
+                    <i class="bi bi-bell-fill text-primary me-1"></i> Notifikasi
+                </h6>
+
+                @foreach ($notifications as $notif)
+                    <div class="alert {{ $notif->read_at ? 'alert-secondary' : 'alert-info' }} mb-3 border-0 shadow-sm"
+                        style="border-radius: 14px;">
+                        <div class="d-flex align-items-start">
+                            <div class="me-3 fs-4">
+                                <i class="bi bi-calendar-check-fill mx-2"></i>
+                            </div>
+
+                            <div class="flex-grow-1">
+                                <div class="fw-bold mb-1">
+                                    {{ $notif->data['title'] }}
+
+                                    @if (is_null($notif->read_at))
+                                        <span class="badge bg-danger ms-2">Baru</span>
+                                    @endif
+                                </div>
+
+                                <div class="text-white">
+                                    {{ $notif->data['message'] }}
+                                </div>
+
+                                @if (isset($notif->data['waktu_mulai']))
+                                    <div class="mt-2 p-2 rounded small">
+                                        <i class="bi bi-clock-fill me-1"></i>
+                                        <strong>Jadwal Tes:</strong><br>
+                                        {{ \Carbon\Carbon::parse($notif->data['waktu_mulai'])->format('d M Y') }}<br>
+                                        {{ \Carbon\Carbon::parse($notif->data['waktu_mulai'])->format('H:i') }}
+                                        –
+                                        {{ \Carbon\Carbon::parse($notif->data['waktu_selesai'])->format('H:i') }} WIB
+                                    </div>
+                                @endif
+
+                                <div class="small text-end text-dark mt-2">
+                                    <i class="bi bi-info-circle"></i>
+                                    Dikirim {{ $notif->created_at->diffForHumans() }}
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                @endforeach
+
+            </div>
+        @endif
+
+
         <div class="page-title">Halo, {{ Auth::user()->name }}</div>
         <div class="sub-title">Berikut progress pendaftaran Anda.</div>
 

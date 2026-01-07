@@ -97,88 +97,113 @@
         </div>
     </div>
 
-
-
-
-    {{-- =========================================================
-    TIMELINE SELEKSI
-========================================================= --}}
-    {{-- <div class="card shadow-sm border-0">
+    <div class="card mb-4 shadow-sm border-0">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <strong>Timeline Seleksi</strong>
+            <strong>QRIS Pembayaran</strong>
 
-            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahTimeline">
-                <i class="fas fa-plus"></i> Tambah Gelombang
+            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahQris">
+                <i class="fas fa-plus"></i> Tambah QRIS
             </button>
         </div>
 
         <div class="card-body">
-
             <table class="table table-bordered align-middle">
                 <thead class="table-light">
                     <tr>
-                        <th>#</th>
-                        <th>Nama Gelombang</th>
-                        <th>Mulai</th>
-                        <th>Selesai</th>
+                        <th>Nama</th>
+                        <th>QRIS</th>
                         <th>Status</th>
                         <th width="15%">Aksi</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    @forelse ($timeline as $i => $t)
-                        @php
-                            $today = now()->format('Y-m-d');
-
-                            $status =
-                                $today < $t->mulai
-                                    ? 'Akan Datang'
-                                    : ($today > $t->selesai
-                                        ? 'Berakhir'
-                                        : 'Berlangsung');
-
-                            $badge = [
-                                'Akan Datang' => 'info',
-                                'Berlangsung' => 'success',
-                                'Berakhir' => 'secondary',
-                            ][$status];
-                        @endphp
-
+                    @foreach ($qris as $q)
                         <tr>
-                            <td>{{ $i + 1 }}</td>
-                            <td>{{ $t->nama_gelombang }}</td>
-                            <td>{{ $t->mulai->format('d M Y') }}</td>
-                            <td>{{ $t->selesai->format('d M Y') }}</td>
-                            <td>
-                                <span class="badge bg-{{ $badge }}">{{ $status }}</span>
+                            <td>{{ $q->nama }}</td>
+
+                            <td class="text-center">
+                                <img src="{{ asset('storage/' . $q->image) }}" style="max-width:80px; cursor:pointer"
+                                    class="img-thumbnail" data-bs-toggle="modal"
+                                    data-bs-target="#modalQris{{ $q->id }}">
                             </td>
+
+                            <td>
+                                <span class="badge bg-{{ $q->aktif ? 'success' : 'secondary' }}">
+                                    {{ $q->aktif ? 'Aktif' : 'Nonaktif' }}
+                                </span>
+                            </td>
+
                             <td>
                                 <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
-                                    data-bs-target="#modalEditTimeline{{ $t->id }}">
-                                    <i class="fas fa-edit"></i>
+                                    data-bs-target="#modalEditQris{{ $q->id }}">
+                                    Edit
                                 </button>
 
                                 <button class="btn btn-sm btn-danger" data-bs-toggle="modal"
-                                    data-bs-target="#modalDeleteTimeline{{ $t->id }}">
-                                    <i class="fas fa-trash"></i>
+                                    data-bs-target="#modalDeleteQris{{ $q->id }}">
+                                    Hapus
                                 </button>
+
                             </td>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="text-center text-muted py-4">
-                                Belum ada timeline seleksi.
-                            </td>
-                        </tr>
-                    @endforelse
+
+                        {{-- Modal Preview --}}
+                        <div class="modal fade" id="modalQris{{ $q->id }}">
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-body text-center">
+                                        <img src="{{ asset('storage/' . $q->image) }}" class="img-fluid">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </tbody>
             </table>
-
         </div>
-    </div> --}}
+    </div>
 
 
+
+
+    {{-- =========================================================
+MODAL: Tambah QRIS
+========================================================= --}}
+    <div class="modal fade" id="modalTambahQris">
+        <div class="modal-dialog modal-dialog-centered">
+            <form class="modal-content" method="POST" action="{{ route('admin.qris.store') }}"
+                enctype="multipart/form-data">
+                @csrf
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Tambah QRIS</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <label>Nama QRIS</label>
+                    <input type="text" name="nama" class="form-control mb-2" required>
+
+                    <label>Gambar QRIS</label>
+                    <input type="file" name="image" class="form-control mb-2" accept="image/*" required>
+
+                    <div class="form-check mt-2">
+                        <input class="form-check-input" type="checkbox" name="aktif" value="1" checked>
+                        <label class="form-check-label">
+                            Aktifkan QRIS
+                        </label>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button class="btn btn-primary">Simpan</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
 
 
     {{-- =========================================================
@@ -241,7 +266,8 @@
                             value="{{ $r->nomor_rekening }}" required>
 
                         <label>Atas Nama</label>
-                        <input type="text" name="atas_nama" class="form-control" value="{{ $r->atas_nama }}" required>
+                        <input type="text" name="atas_nama" class="form-control" value="{{ $r->atas_nama }}"
+                            required>
                     </div>
 
                     <div class="modal-footer">
@@ -275,6 +301,71 @@
                         <button class="btn btn-danger">Hapus</button>
                     </div>
 
+                </form>
+            </div>
+        </div>
+    @endforeach
+
+    @foreach ($qris as $q)
+        {{-- Modal Edit QRIS --}}
+        <div class="modal fade" id="modalEditQris{{ $q->id }}">
+            <div class="modal-dialog">
+                <form class="modal-content" method="POST" action="{{ route('admin.qris.update', $q->id) }}"
+                    enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit QRIS</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <label>Nama QRIS</label>
+                        <input type="text" name="nama" class="form-control mb-2" value="{{ $q->nama }}"
+                            required>
+
+                        <label>Ganti Gambar (opsional)</label>
+                        <input type="file" name="image" class="form-control mb-2" accept="image/*">
+
+                        <div class="form-check mt-2">
+                            <input class="form-check-input" type="checkbox" name="aktif" value="1"
+                                {{ $q->aktif ? 'checked' : '' }}>
+                            <label class="form-check-label">
+                                Aktifkan QRIS
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button class="btn btn-warning">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {{-- Modal Hapus QRIS --}}
+        <div class="modal fade" id="modalDeleteQris{{ $q->id }}">
+            <div class="modal-dialog modal-dialog-centered">
+                <form class="modal-content" method="POST" action="{{ route('admin.qris.delete', $q->id) }}">
+                    @csrf
+                    @method('DELETE')
+
+                    <div class="modal-header">
+                        <h5 class="modal-title text-danger">Hapus QRIS</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        Yakin ingin menghapus QRIS
+                        <strong>{{ $q->nama }}</strong>?
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button class="btn btn-danger">Hapus</button>
+                    </div>
                 </form>
             </div>
         </div>

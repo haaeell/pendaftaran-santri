@@ -139,7 +139,7 @@ class DatabaseSeeder extends Seeder
         |--------------------------------------------------------------------------
         */
         foreach (KategoriSoal::all() as $k) {
-            for ($i = 1; $i <= 3; $i++) {
+            for ($i = 1; $i <= 10; $i++) {
                 Soal::create([
                     'kategori_id' => $k->id,
                     'pertanyaan' => "Contoh pertanyaan {$i} untuk {$k->nama_kategori}",

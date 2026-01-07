@@ -7,6 +7,7 @@ use App\Models\HasilTesSantri;
 use App\Models\JadwalTesSantri;
 use App\Models\PembayaranSantri;
 use App\Models\PengaturanPembayaran;
+use App\Models\QrisPembayaran;
 use App\Models\RekeningPembayaran;
 use App\Models\TimelineSeleksi;
 use Illuminate\Http\Request;
@@ -32,13 +33,16 @@ class JadwalSeleksiController extends Controller
             ->with('kategori')
             ->get();
 
+        $qris = QrisPembayaran::orderBy('nama')->get();
+
         return view('santri.jadwal.index', compact(
             'user',
             'biaya',
             'rekening',
             'pembayaran',
             'jadwalTes',
-            'hasilTes'
+            'hasilTes',
+            'qris'
         ));
     }
 

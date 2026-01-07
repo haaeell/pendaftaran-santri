@@ -12,6 +12,7 @@ class RekeningPembayaran extends Model
         'bank',
         'nomor_rekening',
         'atas_nama',
+        'qris'
     ];
 
     public function pembayaranSantri()

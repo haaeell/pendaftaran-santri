@@ -17,24 +17,68 @@
             <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
 
-        {{-- STATUS PENGUMUMAN --}}
         <div class="alert {{ $pengumuman ? 'alert-success' : 'alert-warning' }}">
             Status Pengumuman:
             <strong>{{ $pengumuman ? 'Sudah Diumumkan' : 'Belum Diumumkan' }} untuk tahun akademik
                 {{ $tahunAktif->tahun }}</strong>
         </div>
 
-        {{-- TOMBOL UMUMKAN --}}
         @if (!$pengumuman)
-            <form action="{{ route('admin.pengumuman.umumkan') }}" method="POST">
-                @csrf
-                <button class="btn btn-primary mb-4">
+            <div>
+                <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#modalUmumkan">
                     <i class="fas fa-bullhorn"></i> Umumkan Hasil Seleksi
                 </button>
-            </form>
+            </div>
         @endif
+        {{-- MODAL UMUMKAN + CATATAN --}}
+        <div class="modal fade" id="modalUmumkan" tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
 
-        {{-- TABEL DAFTAR HASIL --}}
+                    <form action="{{ route('admin.pengumuman.umumkan') }}" method="POST">
+                        @csrf
+
+                        <div class="modal-header">
+                            <h5 class="modal-title fw-bold">
+                                <i class="bi bi-megaphone-fill"></i> Umumkan Hasil Seleksi
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body">
+
+                            <div class="alert alert-info">
+                                Catatan ini akan ditampilkan kepada <strong>pendaftar yang DITERIMA</strong>
+                                sebagai instruksi lanjutan.
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Catatan / Instruksi</label>
+                                <textarea name="note" rows="5" class="form-control" style="height: auto;">
+                            1. Melakukan daftar ulang pada tanggal ...
+                            2. Membawa berkas asli
+                            3. Pembayaran tahap selanjutnya ...
+                            </textarea>
+                            </div>
+
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                Batal
+                            </button>
+                            <button class="btn btn-primary">
+                                <i class="bi bi-bullhorn"></i> Umumkan Sekarang
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
         <div class="table-responsive mt-3">
             <table class="table table-bordered table-striped align-middle">
                 <thead class="table-light">

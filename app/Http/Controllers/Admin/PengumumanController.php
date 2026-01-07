@@ -35,15 +35,16 @@ class PengumumanController extends Controller
     }
 
 
-    public function umumkan()
+    public function umumkan(Request $request)
     {
         $tahunAktif = TahunAkademik::where('aktif', 1)->firstOrFail();
 
-        $pengumuman = PengumumanHasil::firstOrCreate(
+        $pengumuman = PengumumanHasil::updateOrCreate(
             ['tahun_akademik_id' => $tahunAktif->id],
             [
                 'status' => 'sudah',
                 'tanggal_pengumuman' => now(),
+                'note' => $request->note,
             ]
         );
 

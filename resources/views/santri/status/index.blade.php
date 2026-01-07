@@ -127,6 +127,21 @@
                         @endforeach
                     </table>
 
+                    <h6 class="fw-bold mt-4 text-center">Pembayaran via QRIS</h6>
+
+                    <div class="row justify-content-center  ">
+                        @foreach ($qris as $q)
+                            @if ($q->aktif)
+                                <div class="col-md-4 text-center mb-3">
+                                    <img src="{{ asset('storage/' . $q->image) }}" class="img-fluid rounded shadow"
+                                        style="cursor:pointer" data-bs-toggle="modal"
+                                        data-bs-target="#modalQris{{ $q->id }}">
+                                    <div class="mt-2 fw-bold">{{ $q->nama }}</div>
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+
                     {{-- FORM UPLOAD --}}
                     @if (!$pembayaranDU || $pembayaranDU->status === 'ditolak')
                         <hr>
@@ -164,7 +179,20 @@
                     <div class="alert alert-success text-center fw-bold fs-5">
                         SELAMAT!
                         <br>ANDA RESMI MENJADI SANTRI BARU.
+
                     </div>
+                    @if (!empty($pengumuman->note))
+                        <div class="card border-success shadow-sm">
+                            <div class="card-header text-dark fw-bold">
+                                📌 Catatan Penting dari Panitia
+                            </div>
+                            <div class="card-body">
+                                <div class="fw-bold text-dark">
+                                    {!! nl2br(e($pengumuman->note)) !!}
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 @endif
 
             @endif

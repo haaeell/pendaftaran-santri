@@ -15,6 +15,14 @@ class HomeController extends Controller
     {
         $user = auth()->user();
 
+        $notifications = [];
+        if ($user->role === 'santri') {
+            $notifications = $user->notifications()
+                ->latest()
+                ->take(5)
+                ->get();
+        }
+
         $tahunAktif = TahunAkademik::where('aktif', true)->first();
         $dataDiri = null;
         $pembayaran = null;
@@ -90,6 +98,7 @@ class HomeController extends Controller
             'menunggu' => $menunggu,
             'terverifikasi' => $terverifikasi,
             'totalSoal' => $totalSoal,
+            'notifications' => $notifications
         ]);
     }
 }

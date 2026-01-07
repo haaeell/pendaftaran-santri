@@ -22,6 +22,7 @@ use App\Http\Controllers\Admin\TahunAkademikController;
 use App\Http\Controllers\Admin\DataPendaftarController;
 use App\Http\Controllers\Admin\MasterSoalController;
 use App\Http\Controllers\Admin\PengaturanPembayaranController;
+use App\Http\Controllers\QrisController;
 
 /*
 |--------------------------------------------------------------------------
@@ -107,7 +108,7 @@ Route::middleware('auth')
                 Route::get('/', 'index')->name('index');
                 Route::post('{id}/approve', 'approve')->name('approve');
                 Route::post('{id}/reject', 'reject')->name('reject');
-                Route::post('{id}/cancel', 'cancel')->name('cancel'); // 🟡 tambahan baru
+                Route::post('{id}/cancel', 'cancel')->name('cancel');
             });
 
 
@@ -179,6 +180,16 @@ Route::middleware('auth')
         */
         Route::get('/pendaftar', [DataPendaftarController::class, 'index'])
             ->name('pendaftar.index');
+
+        /*
+        |-------------------------------
+        | QRIS
+        |-------------------------------
+        */
+        Route::post('/qris', [QrisController::class, 'store'])->name('qris.store');
+        Route::put('/qris/{id}', [QrisController::class, 'update'])->name('qris.update');
+        Route::delete('/qris/{id}', [QrisController::class, 'destroy'])->name('qris.delete');
+
 
 
         /*

@@ -7,6 +7,7 @@ use App\Models\PembayaranSantri;
 use App\Models\JadwalTesSantri;
 use App\Models\TahunAkademik;
 use App\Models\User;
+use App\Notifications\JadwalTesNotification;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -56,7 +57,7 @@ class JadwalTestController extends Controller
             'waktu_selesai' => 'required|date',
         ]);
 
-        JadwalTesSantri::updateOrCreate(
+        $jadwal = JadwalTesSantri::updateOrCreate(
             ['user_id' => $request->user_id],
             [
                 'waktu_mulai' => $request->waktu_mulai,
@@ -64,6 +65,9 @@ class JadwalTestController extends Controller
                 'sudah_mulai' => false,
             ]
         );
+
+        $user = User::find($request->user_id);
+        $user->notify(new JadwalTesNotification($jadwal));
 
         return back()->with('success', 'Jadwal tes berhasil disimpan.');
     }

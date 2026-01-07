@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\PengaturanPembayaran;
+use App\Models\QrisPembayaran;
 use App\Models\RekeningPembayaran;
 use App\Models\TimelineSeleksi;
 use App\Models\TahunAkademik;
@@ -42,11 +43,14 @@ class PengaturanPembayaranController extends Controller
             ->orderBy('mulai')
             ->get();
 
+        $qris = QrisPembayaran::orderBy('nama')->get();
+
         return view('admin.pengaturan-pembayaran.index', compact(
             'tahunAktif',
             'pengaturan',
             'rekening',
-            'timeline'
+            'timeline',
+            'qris'
         ));
     }
 

@@ -164,18 +164,53 @@
                 </table>
             @endif
 
-
-            <h6 class="fw-bold mt-4">Rekening Pembayaran</h6>
-            <table class="table table-striped mt-2">
-                @foreach ($rekening as $r)
-                    <tr>
-                        <td width="30%"><strong>{{ $r->bank }}</strong></td>
-                        <td>{{ $r->nomor_rekening }} <br> <small>{{ $r->atas_nama }}</small></td>
-                    </tr>
-                @endforeach
-            </table>
-
             @if (!$pembayaran || $pembayaran->status == 'ditolak')
+                <h6 class="fw-bold mt-4">Rekening Pembayaran</h6>
+
+                <table class="table table-bordered align-middle mt-2">
+                    <thead class="table-light">
+                        <tr>
+                            <th width="20%">Bank</th>
+                            <th width="35%">No Rekening</th>
+                            <th width="25%">Atas Nama</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach ($rekening as $r)
+                            <tr>
+                                <td><strong>{{ $r->bank }}</strong></td>
+
+                                {{-- NO REKENING + COPY --}}
+                                <td>
+                                    <span id="rek-{{ $r->id }}">{{ $r->nomor_rekening }}</span>
+                                    <button type="button" class="btn btn-sm btn-outline-primary ms-2"
+                                        onclick="copyRekening('{{ $r->id }}')">
+                                        <i class="bi bi-clipboard"></i>
+                                    </button>
+                                </td>
+
+                                <td>{{ $r->atas_nama }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+                <h6 class="fw-bold mt-4 text-center">Pembayaran via QRIS</h6>
+
+                <div class="row justify-content-center  ">
+                    @foreach ($qris as $q)
+                        @if ($q->aktif)
+                            <div class="col-md-4 text-center mb-3">
+                                <img src="{{ asset('storage/' . $q->image) }}" class="img-fluid rounded shadow"
+                                    style="cursor:pointer" data-bs-toggle="modal"
+                                    data-bs-target="#modalQris{{ $q->id }}">
+                                <div class="mt-2 fw-bold">{{ $q->nama }}</div>
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
+
                 <hr>
                 <form action="{{ route('santri.jadwal.upload') }}" method="POST" enctype="multipart/form-data"
                     class="mt-3">
@@ -248,4 +283,15 @@
 
     </div>
 
+    <script>
+        function copyRekening(id) {
+            const text = document.getElementById('rek-' + id).innerText;
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Nomor rekening berhasil disalin!');
+            }).catch(() => {
+                alert('Gagal menyalin nomor rekening');
+            });
+        }
+    </script>
 @endsection

@@ -7,6 +7,7 @@ use App\Models\PembayaranSantri;
 use App\Models\JadwalTesSantri;
 use App\Models\PengaturanPembayaran;
 use App\Models\PengumumanHasil;
+use App\Models\QrisPembayaran;
 use App\Models\RekeningPembayaran;
 use App\Models\TahunAkademik;
 use Illuminate\Support\Facades\Auth;
@@ -42,6 +43,8 @@ class StatusSeleksiController extends Controller
             ->first();
 
         $statusSeleksi = $dataDiri->status_seleksi;
+        $qris = QrisPembayaran::orderBy('nama')->get();
+
 
         return view('santri.status.index', compact(
             'user',
@@ -51,7 +54,8 @@ class StatusSeleksiController extends Controller
             'biayaDaftarUlang',
             'rekening',
             'pembayaranDU',
-            'statusSeleksi'
+            'statusSeleksi',
+            'qris'
         ));
     }
 }

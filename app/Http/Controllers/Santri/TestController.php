@@ -33,9 +33,21 @@ class TestController extends Controller
 
     public function index()
     {
-        $kategori = KategoriSoal::with('soal')->get();
+        $kategori = KategoriSoal::with(['soal' => function ($q) {
+            $q->inRandomOrder()->limit(5);
+        }])->get();
+
+        $soalTampil = [];
+
+        foreach ($kategori as $kat) {
+            $soalTampil[$kat->id] = $kat->soal->pluck('id')->toArray();
+        }
+
+        session(['soal_tes' => $soalTampil]);
+
         return view('santri.test.index', compact('kategori'));
     }
+
 
     public function submit(Request $request)
     {
@@ -45,7 +57,12 @@ class TestController extends Controller
         $selesai = now();
 
         $jawabanUser  = $request->jawaban ?? [];
-        $kategoriList = KategoriSoal::with('soal')->get();
+        $soalSession = session('soal_tes', []);
+
+        $kategoriList = KategoriSoal::whereIn('id', array_keys($soalSession))
+            ->with(['soal' => function ($q) use ($soalSession) {
+                $q->whereIn('id', collect($soalSession)->flatten());
+            }])->get();
 
         $nilaiAkhir = 0;
         $gagalThreshold = false;

@@ -12,6 +12,7 @@ class PengumumanHasil extends Model
         'tahun_akademik_id',
         'tanggal_pengumuman',
         'status',
+        'note',
     ];
 
     protected $casts = [
