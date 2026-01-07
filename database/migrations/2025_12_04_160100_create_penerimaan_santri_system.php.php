@@ -105,6 +105,8 @@ return new class extends Migration
                 'gugur'
             ])->default('belum_diterima');
 
+            $table->float('nilai_akhir')->nullable();
+
             $table->timestamps();
         });
 
@@ -222,6 +224,7 @@ return new class extends Migration
 
             $table->integer('nilai')->nullable();
             $table->boolean('lulus_threshold')->nullable();
+            $table->json('jawaban')->nullable();
 
             $table->timestamps();
         });
@@ -236,6 +239,23 @@ return new class extends Migration
             $table->foreignId('tahun_akademik_id')->constrained('tahun_akademik')->cascadeOnDelete();
             $table->date('tanggal_pengumuman');
             $table->enum('status', ['belum', 'sudah'])->default('belum');
+            $table->text('note')->nullable()->after('status');
+            $table->timestamps();
+        });
+
+        Schema::table('data_diri_santri', function (Blueprint $table) {
+            $table->foreignId('tahun_akademik_id')
+                ->nullable()
+                ->after('user_id')
+                ->constrained('tahun_akademik')
+                ->cascadeOnDelete();
+        });
+
+        Schema::create('qris_pembayaran', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama'); // contoh: QRIS PMB 2026
+            $table->string('image'); // path gambar qris
+            $table->boolean('aktif')->default(true);
             $table->timestamps();
         });
     }
