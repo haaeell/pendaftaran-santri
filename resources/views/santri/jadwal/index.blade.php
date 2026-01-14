@@ -29,18 +29,12 @@
                     <td>{{ $user->name }}</td>
                 </tr>
                 <tr>
-                    <th>NISN</th>
-                    <td>{{ $user->dataDiri->nisn ?? '-' }}</td>
-                </tr>
-                <tr>
                     <th>Pendidikan Tujuan</th>
                     <td>{{ $user->dataDiri->pendidikan_tujuan ?? '-' }}</td>
                 </tr>
             </table>
 
             <hr class="my-4">
-
-            <h5 class="fw-bold mb-3">Riwayat Tes Seleksi</h5>
 
             <div class="alert alert-success">
                 Tes telah diselesaikan.
@@ -58,55 +52,6 @@
                     </a>
                 </div>
             @endif
-
-
-            @foreach ($hasilTes as $item)
-                @php
-                    $data = json_decode($item->jawaban, true);
-                    $jawaban = $data['jawaban'] ?? [];
-                    $kategoriNama = $item->kategori->nama_kategori;
-                @endphp
-
-                <div class="card mb-4">
-                    <div class="card-header bg-light fw-bold">
-                        {{ $kategoriNama }}
-                    </div>
-
-                    <div class="card-body">
-
-                        {{-- Tabel Detail Jawaban --}}
-                        <table class="table table-bordered">
-                            <thead class="table-light">
-                                <tr>
-                                    <th width="5%">No</th>
-                                    <th>Pertanyaan</th>
-                                    <th width="25%">Jawaban User</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                @foreach ($jawaban as $i => $row)
-                                    @php
-                                        $soal = \App\Models\Soal::find($row['soal_id']);
-                                    @endphp
-                                    <tr>
-                                        <td>{{ $i + 1 }}</td>
-
-                                        <td>{{ $soal->pertanyaan ?? '-' }}</td>
-
-                                        <td>
-                                            {{ $row['jawaban_user_text'] ?? '-' }}
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-
-                    </div>
-                </div>
-            @endforeach
-
-
             <hr class="my-4">
         @else
             {{-- ======================== BELUM TEST :: TAMPIL NORMAL ======================== --}}

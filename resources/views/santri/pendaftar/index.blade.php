@@ -65,11 +65,6 @@
                         <td>{{ $data->jenis_kelamin == 'L' ? 'Laki-Laki' : 'Perempuan' }}</td>
                     </tr>
 
-                    <tr>
-                        <th>NISN</th>
-                        <td>{{ $data->nisn }}</td>
-                    </tr>
-
                     <tr class="table-light">
                         <th colspan="2" class="fw-bold text-center">Riwayat Pendidikan</th>
                     </tr>

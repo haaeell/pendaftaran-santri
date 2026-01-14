@@ -184,10 +184,6 @@
                                             <td>NIK</td>
                                             <td>: {{ $d->nik }}</td>
                                         </tr>
-                                        <tr>
-                                            <td>NISN</td>
-                                            <td>: {{ $d->nisn }}</td>
-                                        </tr>
                                     </table>
 
                                     {{-- ================= DATA WALI ================= --}}

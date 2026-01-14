@@ -77,16 +77,6 @@
                     @enderror
                 </div>
 
-                {{-- NISN --}}
-                <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">NISN</label>
-                    <input type="text" name="nisn" class="form-control @error('nisn') is-invalid @enderror"
-                        value="{{ old('nisn', $data->nisn ?? '') }}">
-                    @error('nisn')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
                 {{-- Alamat --}}
                 <div class="col-md-12 mb-3">
                     <label class="form-label fw-bold">Alamat Domisili</label>
