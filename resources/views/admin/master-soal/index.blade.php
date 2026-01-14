@@ -7,7 +7,7 @@
 
     {{-- =======================================================
     TABLE KATEGORI
-======================================================= --}}
+    ======================================================= --}}
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="fw-bold mb-0">Daftar Kategori Soal</h5>
@@ -26,7 +26,7 @@
                         <th>Nama Kategori</th>
                         <th>Tipe</th>
                         <th>Bobot</th>
-                        <th>Minimal Benar</th>
+                        <th>Metode</th>
                         <th width="25%">Aksi</th>
                     </tr>
                 </thead>
@@ -38,13 +38,15 @@
                             <td>{{ $kat->nama_kategori }}</td>
                             <td>{{ ucfirst($kat->tipe_kriteria) }}</td>
                             <td>{{ $kat->bobot ?? '-' }}</td>
-                            <td>{{ $kat->minimal_benar ?? '-' }}</td>
+                            <td>{{ $kat->metode ?? '-' }}</td>
 
                             <td>
-                                <button class="btn btn-sm btn-success" data-bs-toggle="modal"
-                                    data-bs-target="#modalTambahSoal{{ $kat->id }}">
-                                    <i class="fas fa-plus"></i> Soal
-                                </button>
+                               @if ($kat->metode == 'pg')
+                               <button class="btn btn-sm btn-success" data-bs-toggle="modal"
+                               data-bs-target="#modalTambahSoal{{ $kat->id }}">
+                               <i class="fas fa-plus"></i> Soal
+                           </button>
+                               @endif
 
                                 <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
                                     data-bs-target="#modalEditKategori{{ $kat->id }}">
@@ -151,7 +153,7 @@
 
     {{-- =======================================================
     TABLE SOAL
-======================================================= --}}
+    ======================================================= --}}
     <div class="card shadow-sm border-0">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="fw-bold mb-0">Daftar Soal</h5>
@@ -220,7 +222,7 @@
 
     {{-- =======================================================
     MODAL TAMBAH KATEGORI
-======================================================= --}}
+    ======================================================= --}}
     <div class="modal fade" id="modalTambahKategori" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -244,10 +246,15 @@
                             <option value="benefit">Benefit</option>
                         </select>
 
-                        <div class="field-threshold d-none">
-                            <label>Minimal Benar</label>
-                            <input type="number" name="minimal_benar" class="form-control mb-2">
+                        <div class="field-metode">
+                            <label>Metode</label>
+                            <select name="metode" class="form-control mb-2" required>
+                                <option value="">-- Pilih --</option>
+                                <option value="pg">PG</option>
+                                <option value="gmeet">GMeet</option>
+                            </select>
                         </div>
+                        
 
                         <div class="field-benefit d-none">
                             <label>Bobot (Max 100)</label>
@@ -273,7 +280,7 @@
 
     {{-- =======================================================
     MODAL EDIT KATEGORI & MODAL TAMBAH SOAL
-======================================================= --}}
+    ======================================================= --}}
     @foreach ($kategori as $kat)
         {{-- EDIT KATEGORI --}}
         <div class="modal fade" id="modalEditKategori{{ $kat->id }}" tabindex="-1">
@@ -291,8 +298,8 @@
 
                         <div class="modal-body">
                             <label>Nama Kategori</label>
-                            <input type="text" name="nama_kategori" value="{{ $kat->nama_kategori }}"
-                                class="form-control mb-2" required>
+                            <input type="text" name="nama_kategori" value="{{ $kat->nama_kategori }}" class="form-control mb-2"
+                                required>
 
 
                             <label>Tipe Penilaian</label>
@@ -306,16 +313,18 @@
                                 </option>
                             </select>
 
-                            <div class="field-threshold d-none">
-                                <label>Minimal Benar</label>
-                                <input type="number" name="minimal_benar" value="{{ $kat->minimal_benar }}"
-                                    class="form-control mb-2">
+                            <div class="field-metode">
+                                <label>Metode</label>
+                                <select name="metode" class="form-control mb-2" required>
+                                    <option value="pg" {{ $kat->metode === 'pg' ? 'selected' : '' }}>PG</option>
+                                    <option value="gmeet" {{ $kat->metode === 'gmeet' ? 'selected' : '' }}>GMeet</option>
+                                </select>
                             </div>
+                            
 
                             <div class="field-benefit d-none">
                                 <label>Bobot (Max 100)</label>
-                                <input type="number" name="bobot" value="{{ $kat->bobot }}"
-                                    class="form-control mb-2" max="100">
+                                <input type="number" name="bobot" value="{{ $kat->bobot }}" class="form-control mb-2" max="100">
                             </div>
 
                         </div>
@@ -388,7 +397,7 @@
 
     {{-- =======================================================
     MODAL EDIT SOAL
-======================================================= --}}
+    ======================================================= --}}
     @foreach ($kategori as $kat)
         @foreach ($kat->soal as $soal)
             <div class="modal fade" id="modalEditSoal{{ $soal->id }}" tabindex="-1">
@@ -411,15 +420,13 @@
 
                                 <label>Pilihan Jawaban</label>
                                 @foreach ($soal->pilihan as $key => $pil)
-                                    <input type="text" name="pilihan[{{ $key }}]" class="form-control mb-2"
-                                        value="{{ $pil }}">
+                                    <input type="text" name="pilihan[{{ $key }}]" class="form-control mb-2" value="{{ $pil }}">
                                 @endforeach
 
                                 <label>Kunci Jawaban</label>
                                 <select name="jawaban" class="form-control">
                                     @foreach ($soal->pilihan as $key => $pil)
-                                        <option value="{{ $key }}"
-                                            {{ $soal->jawaban == $key ? 'selected' : '' }}>
+                                        <option value="{{ $key }}" {{ $soal->jawaban == $key ? 'selected' : '' }}>
                                             {{ chr(65 + $key) }}
                                         </option>
                                     @endforeach
@@ -446,9 +453,9 @@
 
     {{-- =======================================================
     FILTER SCRIPT
-======================================================= --}}
+    ======================================================= --}}
     <script>
-        document.getElementById('filterKategori').addEventListener('change', function() {
+        document.getElementById('filterKategori').addEventListener('change', function () {
             let val = this.value;
             document.querySelectorAll('#tabelSoal tbody tr').forEach(tr => {
                 tr.style.display = (val === "" || tr.dataset.kategori === val) ? "" : "none";
@@ -473,7 +480,7 @@
         }
 
         document.querySelectorAll('.tipe-kriteria').forEach(select => {
-            select.addEventListener('change', function() {
+            select.addEventListener('change', function () {
                 handleTipe(this);
             });
 

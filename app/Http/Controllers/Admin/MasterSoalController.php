@@ -90,8 +90,8 @@ class MasterSoalController extends Controller
         $validated = $request->validate([
             'nama_kategori'  => 'required|string|max:255',
             'tipe_kriteria'  => 'required|in:threshold,benefit',
-            'minimal_benar'  => 'required_if:tipe_kriteria,threshold|nullable|integer|min:0',
             'bobot'          => 'required_if:tipe_kriteria,benefit|nullable|integer|min:1|max:100',
+            'metode'         => 'required',
         ]);
 
         if ($validated['tipe_kriteria'] === 'threshold') {
