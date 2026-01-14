@@ -90,45 +90,45 @@
                             </td>
 
                             @php
-                            $belumLengkap = false;
-                        
-                            foreach ($kategori as $kat) {
-                                $hasil = $hasilTes[$kat->id] ?? null;
-                        
-                                if ($kat->tipe_kriteria === 'threshold') {
-                                    if (!$hasil || is_null($hasil->lulus_threshold)) {
-                                        $belumLengkap = true;
-                                        break;
-                                    }
-                                } else {
-                                    if (!$hasil || is_null($hasil->nilai)) {
-                                        $belumLengkap = true;
-                                        break;
+                                $belumLengkap = false;
+
+                                foreach ($kategori as $kat) {
+                                    $hasil = $hasilTes[$kat->id] ?? null;
+
+                                    if ($kat->tipe_kriteria === 'threshold') {
+                                        if (!$hasil || is_null($hasil->lulus_threshold)) {
+                                            $belumLengkap = true;
+                                            break;
+                                        }
+                                    } else {
+                                        if (!$hasil || is_null($hasil->nilai)) {
+                                            $belumLengkap = true;
+                                            break;
+                                        }
                                     }
                                 }
-                            }
-                        @endphp
-                        
-                        <td>
-                            @if ($belumLengkap)
-                                <span class="badge bg-secondary">
-                                    Belum Lengkap
-                                </span>
-                            @else
-                                @php
-                                    $badge = [
-                                        'belum_diterima' => 'secondary',
-                                        'lolos_seleksi' => 'success',
-                                        'tidak_lolos_seleksi' => 'danger',
-                                        'diterima' => 'success',
-                                    ][$status];
-                                @endphp
-                        
-                                <span class="badge bg-{{ $badge }}">
-                                    {{ strtoupper(str_replace('_', ' ', $status)) }}
-                                </span>
-                            @endif
-                        </td>                        
+                            @endphp
+
+                            <td>
+                                @if ($belumLengkap)
+                                    <span class="badge bg-secondary">
+                                        Belum Lengkap
+                                    </span>
+                                @else
+                                    @php
+                                        $badge = [
+                                            'belum_diterima' => 'secondary',
+                                            'lolos_seleksi' => 'success',
+                                            'tidak_lolos_seleksi' => 'danger',
+                                            'diterima' => 'success',
+                                        ][$status];
+                                    @endphp
+
+                                    <span class="badge bg-{{ $badge }} text-white">
+                                        {{ strtoupper(str_replace('_', ' ', $status)) }}
+                                    </span>
+                                @endif
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -139,8 +139,7 @@
                     @if ($kat->tipe_kriteria === 'threshold')
                         <div class="modal fade" id="threshold{{ $s->id }}{{ $kat->id }}">
                             <div class="modal-dialog modal-dialog-centered">
-                                <form action="{{ route('admin.hasil.threshold.store') }}" method="POST"
-                                    class="modal-content">
+                                <form action="{{ route('admin.hasil.threshold.store') }}" method="POST" class="modal-content">
                                     @csrf
 
                                     <input type="hidden" name="user_id" value="{{ $s->id }}">
@@ -190,8 +189,7 @@
                                         <label class="fw-bold mb-2">
                                             Nilai (0 – 100)
                                         </label>
-                                        <input type="number" name="nilai" class="form-control" min="0"
-                                            max="100" required>
+                                        <input type="number" name="nilai" class="form-control" min="0" max="100" required>
                                     </div>
 
                                     <div class="modal-footer">

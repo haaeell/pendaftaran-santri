@@ -51,6 +51,10 @@
 
                     <tbody>
                         @forelse ($santri as $i => $s)
+                        @php
+                        $hasilTes = $s->hasilTes->keyBy('kategori_id');
+                        $status = $s->dataDiri->status_seleksi;
+                    @endphp
                             <tr>
                                 <td>{{ $i + 1 }}</td>
                                 <td>{{ $s->name }}</td>
@@ -91,11 +95,11 @@
                                         ][$status];
                                     @endphp
                             
-                                    <span class="badge bg-{{ $badge }}">
+                                    <span class="badge bg-{{ $badge }} text-white">
                                         {{ strtoupper(str_replace('_', ' ', $status)) }}
                                     </span>
                                 @endif
-                            </td>     
+                            </td>      
                                 <td>
                                     <button class="btn btn-sm btn-info" data-bs-toggle="modal"
                                         data-bs-target="#modalDetail{{ $s->id }}">
@@ -183,6 +187,10 @@
                                         <tr>
                                             <td>NIK</td>
                                             <td>: {{ $d->nik }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>NISN</td>
+                                            <td>: {{ $d->nisn }}</td>
                                         </tr>
                                     </table>
 
