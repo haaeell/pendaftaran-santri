@@ -139,6 +139,8 @@ Route::middleware('auth')
             ->group(function () {
                 Route::get('/', 'index')->name('index');
                 Route::post('/proses', 'proses')->name('proses');
+                Route::post('/gmeet', 'storeGmeet')->name('gmeet.store');
+                Route::post('/threshold', 'storeThreshold')->name('threshold.store');
             });
 
 

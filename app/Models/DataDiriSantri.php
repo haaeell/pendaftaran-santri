@@ -8,6 +8,13 @@ class DataDiriSantri extends Model
 {
     protected $table = 'data_diri_santri';
 
+    protected $appends = ['registration_id'];
+
+    public function getRegistrationIdAttribute()
+    {
+        return 'REG-' . str_pad($this->id, 5, '0', STR_PAD_LEFT);
+    }
+
     protected $fillable = [
         'user_id',
         'tahun_akademik_id',

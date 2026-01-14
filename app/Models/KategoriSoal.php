@@ -13,6 +13,7 @@ class KategoriSoal extends Model
         'tipe_kriteria',
         'bobot',
         'minimal_benar',
+        'metode' // pg atau gmeet
     ];
 
     public function soal()

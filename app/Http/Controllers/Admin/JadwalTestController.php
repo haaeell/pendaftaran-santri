@@ -63,6 +63,7 @@ class JadwalTestController extends Controller
                 'waktu_mulai' => $request->waktu_mulai,
                 'waktu_selesai' => $request->waktu_selesai,
                 'sudah_mulai' => false,
+                'link_gmeet' => $request->link_gmeet
             ]
         );
 
@@ -83,6 +84,7 @@ class JadwalTestController extends Controller
         $item->update([
             'waktu_mulai' => $request->waktu_mulai,
             'waktu_selesai' => $request->waktu_selesai,
+            'link_gmeet' => $request->link_gmeet
         ]);
 
         return back()->with('success', 'Jadwal berhasil diperbarui.');

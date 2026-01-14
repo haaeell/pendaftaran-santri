@@ -8,7 +8,7 @@
                 <th>Nominal</th>
                 <th>Rekening Tujuan</th>
                 <th>Bukti Pembayaran</th>
-                <th>Status</th>
+                <th>Status Pembayaran</th>
                 <th style="width:180px;">Aksi</th>
             </tr>
         </thead>
@@ -94,8 +94,8 @@
 
 
 {{-- ========================================================
-   ==========  SEMUA MODAL PREVIEW DITEMPATKAN DI SINI  ==========
-   ======================================================== --}}
+========== SEMUA MODAL PREVIEW DITEMPATKAN DI SINI ==========
+======================================================== --}}
 @foreach ($list as $p)
     <div class="modal fade" id="previewBukti{{ $p->id }}" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -107,8 +107,7 @@
                 </div>
 
                 <div class="modal-body text-center">
-                    <img src="{{ asset('storage/' . $p->bukti_transfer) }}" class="img-fluid rounded border"
-                        alt="bukti">
+                    <img src="{{ asset('storage/' . $p->bukti_transfer) }}" class="img-fluid rounded border" alt="bukti">
                 </div>
 
             </div>
@@ -119,8 +118,8 @@
 
 
 {{-- ========================================================
-   ==========  SEMUA MODAL REJECT DITEMPATKAN DI SINI  ==========
-   ======================================================== --}}
+========== SEMUA MODAL REJECT DITEMPATKAN DI SINI ==========
+======================================================== --}}
 @foreach ($list as $p)
     <div class="modal fade" id="rejectModal{{ $p->id }}" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">

@@ -49,7 +49,6 @@ class JadwalSeleksiController extends Controller
     public function uploadBukti(Request $request)
     {
         $request->validate([
-            'rekening_id' => 'required|exists:rekening_pembayaran,id',
             'bukti_transfer' => 'required|image|max:2048'
         ]);
 
@@ -76,7 +75,7 @@ class JadwalSeleksiController extends Controller
             'user_id' => $user->id,
             'jenis' => 'registrasi',
             'nominal_bayar' => $biaya->nominal,
-            'rekening_id' => $request->rekening_id,
+            'rekening_id' => $request->rekening_id ?? RekeningPembayaran::first()->id,
             'bukti_transfer' => $path,
             'status' => 'menunggu',
         ]);

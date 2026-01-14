@@ -56,22 +56,46 @@
                                 <td>{{ $s->name }}</td>
                                 <td>{{ $s->registration_id }}</td>
                                 <td>{{ $s->dataDiri->pendidikan_tujuan }}</td>
-                                <td>
+                                @php
+                                $belumLengkap = false;
+                            
+                                foreach ($kategori as $kat) {
+                                    $hasil = $hasilTes[$kat->id] ?? null;
+                            
+                                    if ($kat->tipe_kriteria === 'threshold') {
+                                        if (!$hasil || is_null($hasil->lulus_threshold)) {
+                                            $belumLengkap = true;
+                                            break;
+                                        }
+                                    } else {
+                                        if (!$hasil || is_null($hasil->nilai)) {
+                                            $belumLengkap = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                            @endphp
+                            
+                            <td>
+                                @if ($belumLengkap)
+                                    <span class="badge bg-secondary">
+                                        Belum Lengkap
+                                    </span>
+                                @else
                                     @php
-                                        $st = $s->dataDiri->status_seleksi;
                                         $badge = [
                                             'belum_diterima' => 'secondary',
                                             'lolos_seleksi' => 'success',
                                             'tidak_lolos_seleksi' => 'danger',
                                             'diterima' => 'success',
-                                            'gugur' => 'dark',
-                                        ][$st];
+                                        ][$status];
                                     @endphp
-
-                                    <span class="badge bg-{{ $badge }} text-white">
-                                        {{ strtoupper(str_replace('_', ' ', $st)) }}
+                            
+                                    <span class="badge bg-{{ $badge }}">
+                                        {{ strtoupper(str_replace('_', ' ', $status)) }}
                                     </span>
-                                </td>
+                                @endif
+                            </td>     
                                 <td>
                                     <button class="btn btn-sm btn-info" data-bs-toggle="modal"
                                         data-bs-target="#modalDetail{{ $s->id }}">

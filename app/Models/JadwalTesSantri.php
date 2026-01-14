@@ -13,6 +13,7 @@ class JadwalTesSantri extends Model
         'waktu_mulai',
         'waktu_selesai',
         'sudah_mulai',
+        'link_gmeet',
     ];
 
     protected $casts = [

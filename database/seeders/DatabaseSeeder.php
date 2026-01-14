@@ -103,28 +103,39 @@ class DatabaseSeeder extends Seeder
         */
         $kategori = [
             [
+                'nama_kategori' => 'Materi Bacaan Salat',
+                'metode' => 'pg',
+                'tipe_kriteria' => 'benefit',
+                'bobot' => 30,
+                'minimal_benar' => null,
+            ],
+            [
+                'nama_kategori' => 'Materi Dasar Islam',
+                'metode' => 'pg',
+                'tipe_kriteria' => 'benefit',
+                'bobot' => 30,
+                'minimal_benar' => null,
+            ],
+            [
                 'nama_kategori' => 'Wawancara',
+                'metode' => 'gmeet',
                 'tipe_kriteria' => 'threshold',
-                'minimal_benar' => 3,
                 'bobot' => null,
+                'minimal_benar' => 3,
             ],
             [
-                'nama_kategori' => 'Materi Tajwid',
+                'nama_kategori' => 'Membaca',
+                'metode' => 'gmeet',
                 'tipe_kriteria' => 'benefit',
-                'minimal_benar' => null,
-                'bobot' => 40,
-            ],
-            [
-                'nama_kategori' => 'Hafalan Bacaan Salat',
-                'tipe_kriteria' => 'benefit',
-                'minimal_benar' => null,
-                'bobot' => 40,
-            ],
-            [
-                'nama_kategori' => 'Tulis Ayat',
-                'tipe_kriteria' => 'benefit',
-                'minimal_benar' => null,
                 'bobot' => 20,
+                'minimal_benar' => null,
+            ],
+            [
+                'nama_kategori' => 'Menulis Ayat',
+                'metode' => 'gmeet',
+                'tipe_kriteria' => 'benefit',
+                'bobot' => 20,
+                'minimal_benar' => null,
             ],
         ];
 
@@ -133,23 +144,26 @@ class DatabaseSeeder extends Seeder
         }
 
 
+
         /*
         |--------------------------------------------------------------------------
         | SEEDER: SOAL (3 per kategori)
         |--------------------------------------------------------------------------
         */
-        foreach (KategoriSoal::all() as $k) {
+        $kategoriPG = KategoriSoal::where('metode', 'pg')->get();
+
+        foreach ($kategoriPG as $k) {
             for ($i = 1; $i <= 10; $i++) {
                 Soal::create([
                     'kategori_id' => $k->id,
                     'pertanyaan' => "Contoh pertanyaan {$i} untuk {$k->nama_kategori}",
                     'pilihan' => [
-                        'Pilihan 1',
-                        'Pilihan 2',
-                        'Pilihan 3',
-                        'Pilihan 4',
+                        'Pilihan A',
+                        'Pilihan B',
+                        'Pilihan C',
+                        'Pilihan D',
                     ],
-                    'jawaban' => 'Pilihan 1',
+                    'jawaban' => 'Pilihan A',
                 ]);
             }
         }

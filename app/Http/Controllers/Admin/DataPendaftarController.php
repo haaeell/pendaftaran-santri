@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\KategoriSoal;
 use App\Models\TahunAkademik;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -29,6 +30,8 @@ class DataPendaftarController extends Controller
             ->orderByDesc('id')
             ->get();
 
-        return view('admin.pendaftar.index', compact('santri', 'status', 'tahunAktif'));
+        $kategori = KategoriSoal::all();
+
+        return view('admin.pendaftar.index', compact('santri', 'status', 'tahunAktif', 'kategori'));
     }
 }

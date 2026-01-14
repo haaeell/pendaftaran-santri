@@ -33,7 +33,7 @@
                         <tr>
                             <td>{{ $key + 1 }}</td>
                             <td>{{ $user->name }}</td>
-                            <td>{{ $p->registration_id }}</td>
+                            <td>{{ $user->registration_id }}</td>
                             <td>{{ $user->dataDiri->pendidikan_tujuan ?? '-' }}</td>
 
                             <td>
@@ -41,10 +41,19 @@
                                     {{ date('d M Y H:i', strtotime($jadwal[$user->id]->waktu_mulai)) }}
                                     -
                                     {{ date('H:i', strtotime($jadwal[$user->id]->waktu_selesai)) }}
+
+                                    @if ($jadwal[$user->id]->link_gmeet)
+                                        <br>
+                                        <a href="{{ $jadwal[$user->id]->link_gmeet }}" target="_blank"
+                                            class="badge bg-info text-white mt-1">
+                                            Google Meet
+                                        </a>
+                                    @endif
                                 @else
                                     <span class="text-muted">Belum dijadwalkan</span>
                                 @endif
                             </td>
+
 
                             <td>
                                 @if (isset($jadwal[$user->id]))
@@ -88,6 +97,11 @@
 
                         <label class="form-label">Waktu Selesai</label>
                         <input type="datetime-local" name="waktu_selesai" class="form-control" required>
+
+                        <label class="form-label">Link Google Meet</label>
+                        <input type="url" name="link_gmeet" class="form-control mb-3"
+                            placeholder="https://meet.google.com/xxx-xxxx-xxx">
+
                     </div>
 
                     <div class="modal-footer">
@@ -104,8 +118,7 @@
         @if (isset($jadwal[$user->id]))
             <div class="modal fade" id="modalEdit{{ $user->id }}" tabindex="-1">
                 <div class="modal-dialog modal-dialog-centered">
-                    <form action="{{ route('admin.jadwal.update', $jadwal[$user->id]->id) }}" method="POST"
-                        class="modal-content">
+                    <form action="{{ route('admin.jadwal.update', $jadwal[$user->id]->id) }}" method="POST" class="modal-content">
                         @csrf
 
                         <div class="modal-header">
@@ -121,6 +134,11 @@
                             <label class="form-label">Waktu Selesai</label>
                             <input type="datetime-local" name="waktu_selesai" class="form-control"
                                 value="{{ date('Y-m-d\TH:i', strtotime($jadwal[$user->id]->waktu_selesai)) }}" required>
+
+                            <label class="form-label">Link Google Meet</label>
+                            <input type="url" name="link_gmeet" class="form-control mb-3"
+                                value="{{ $jadwal[$user->id]->link_gmeet }}" placeholder="https://meet.google.com/xxx-xxxx-xxx">
+
                         </div>
 
                         <div class="modal-footer">
