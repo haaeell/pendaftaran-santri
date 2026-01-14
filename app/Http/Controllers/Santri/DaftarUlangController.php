@@ -38,7 +38,6 @@ class DaftarUlangController extends Controller
     public function upload(Request $request)
     {
         $request->validate([
-            'rekening_id' => 'required',
             'bukti_transfer' => 'required|image|max:2048',
         ]);
 
@@ -48,7 +47,7 @@ class DaftarUlangController extends Controller
             'user_id' => Auth::id(),
             'jenis' => 'daftar_ulang',
             'nominal_bayar' => $request->nominal_bayar,
-            'rekening_id' => $request->rekening_id,
+            'rekening_id' => $request->rekening_id ?? RekeningPembayaran::first()->id,
             'bukti_transfer' => $path,
             'status' => 'menunggu'
         ]);

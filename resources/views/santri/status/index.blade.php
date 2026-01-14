@@ -98,15 +98,14 @@
                                 @if (!$pembayaranDU)
                                     <span class="badge bg-danger">Belum Membayar</span>
                                 @else
-                                    <span
-                                        class="badge
-                                    {{ $pembayaranDU->status == 'menunggu'
-                                        ? 'bg-warning text-dark'
-                                        : ($pembayaranDU->status == 'diterima'
-                                            ? 'bg-success'
-                                            : 'bg-danger') }}">
-                                        {{ strtoupper($pembayaranDU->status) }}
-                                    </span>
+                                        <span class="badge
+                                                        {{ $pembayaranDU->status == 'menunggu'
+                                    ? 'bg-warning text-dark'
+                                    : ($pembayaranDU->status == 'diterima'
+                                    ? 'bg-success'
+                                    : 'bg-danger') }}">
+                                            {{ strtoupper($pembayaranDU->status) }}
+                                        </span>
                                 @endif
                             </td>
                         </tr>
@@ -133,9 +132,8 @@
                         @foreach ($qris as $q)
                             @if ($q->aktif)
                                 <div class="col-md-4 text-center mb-3">
-                                    <img src="{{ asset('storage/' . $q->image) }}" class="img-fluid rounded shadow"
-                                        style="cursor:pointer" data-bs-toggle="modal"
-                                        data-bs-target="#modalQris{{ $q->id }}">
+                                    <img src="{{ asset('storage/' . $q->image) }}" class="img-fluid rounded shadow" style="cursor:pointer"
+                                        data-bs-toggle="modal" data-bs-target="#modalQris{{ $q->id }}">
                                     <div class="mt-2 fw-bold">{{ $q->nama }}</div>
                                 </div>
                             @endif
@@ -145,13 +143,12 @@
                     {{-- FORM UPLOAD --}}
                     @if (!$pembayaranDU || $pembayaranDU->status === 'ditolak')
                         <hr>
-                        <form action="{{ route('santri.daftarulang.upload') }}" method="POST"
-                            enctype="multipart/form-data">
+                        <form action="{{ route('santri.daftarulang.upload') }}" method="POST" enctype="multipart/form-data">
                             @csrf
 
                             <div class="mb-3">
                                 <label class="fw-bold">Pilih Rekening Tujuan</label>
-                                <select name="rekening_id" class="form-control" required>
+                                <select name="rekening_id" class="form-control">
                                     <option value="">-- Pilih Rekening --</option>
                                     @foreach ($rekening as $r)
                                         <option value="{{ $r->id }}">
