@@ -41,12 +41,12 @@
                             <td>{{ $kat->metode ?? '-' }}</td>
 
                             <td>
-                               @if ($kat->metode == 'pg')
-                               <button class="btn btn-sm btn-success" data-bs-toggle="modal"
-                               data-bs-target="#modalTambahSoal{{ $kat->id }}">
-                               <i class="fas fa-plus"></i> Soal
-                           </button>
-                               @endif
+                                @if ($kat->metode == 'pg')
+                                    <button class="btn btn-sm btn-success" data-bs-toggle="modal"
+                                        data-bs-target="#modalTambahSoal{{ $kat->id }}">
+                                        <i class="fas fa-plus"></i> Soal
+                                    </button>
+                                @endif
 
                                 <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
                                     data-bs-target="#modalEditKategori{{ $kat->id }}">
@@ -254,7 +254,7 @@
                                 <option value="gmeet">GMeet</option>
                             </select>
                         </div>
-                        
+
 
                         <div class="field-benefit d-none">
                             <label>Bobot (Max 100)</label>
@@ -320,7 +320,7 @@
                                     <option value="gmeet" {{ $kat->metode === 'gmeet' ? 'selected' : '' }}>GMeet</option>
                                 </select>
                             </div>
-                            
+
 
                             <div class="field-benefit d-none">
                                 <label>Bobot (Max 100)</label>
@@ -464,16 +464,9 @@
 
         function handleTipe(select) {
             const modal = select.closest('.modal-content');
-            const threshold = modal.querySelector('.field-threshold');
             const benefit = modal.querySelector('.field-benefit');
 
-            threshold.classList.add('d-none');
             benefit.classList.add('d-none');
-
-            if (select.value === 'threshold') {
-                threshold.classList.remove('d-none');
-            }
-
             if (select.value === 'benefit') {
                 benefit.classList.remove('d-none');
             }
