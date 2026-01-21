@@ -94,29 +94,16 @@
 
         <div class="alert alert-info border-0 shadow-sm">
             <h6 class="fw-bold mb-2">
-                <i class="bi bi-exclamation-triangle-fill text-primary me-1"></i>
-                Perhatian Penting!
+                <i class="bi bi-info-circle-fill text-primary me-1"></i>
+                Informasi Waktu Tes
             </h6>
 
-            <ul class="mb-0 ps-3">
-                <li>
-                    <strong>Waktu tes yang berjalan mencakup seluruh rangkaian seleksi, termasuk:</strong>
-                    <ul>
-                        <li>Pengerjaan soal tertulis</li>
-                        <li>Tes lanjutan (wawancara, praktik, membaca, menulis, atau metode lain)</li>
-                    </ul>
-                </li>
-
-                <li>
-                    <strong>Jangan menghabiskan seluruh waktu hanya untuk mengerjakan soal tertulis.</strong>
-                </li>
-
-                <li>
-                    Pastikan Anda mengatur waktu dengan baik agar dapat mengikuti seluruh tahapan tes.
-                </li>
-            </ul>
+            <p class="mb-0">
+                <strong>Jam berakhirnya tes adalah jam dimulainya sesi Google Meet.</strong>
+                Anda dapat menggunakan seluruh waktu yang tersedia untuk mengerjakan soal.
+                Pastikan sudah siap mengikuti sesi Google Meet saat waktu tes berakhir.
+            </p>
         </div>
-
 
         <form action="{{ route('santri.test.submit') }}" method="POST">
             @csrf

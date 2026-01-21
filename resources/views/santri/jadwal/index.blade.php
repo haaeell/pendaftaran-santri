@@ -40,6 +40,20 @@
                 Tes telah diselesaikan.
             </div>
 
+            <div class="alert alert-info border-0 shadow-sm">
+                <h6 class="fw-bold mb-2">
+                    <i class="bi bi-info-circle-fill text-primary me-1"></i>
+                    Informasi Waktu Tes
+                </h6>
+
+                <p class="mb-0">
+                    <strong>Jam berakhirnya tes adalah jam dimulainya sesi Google Meet.</strong>
+                    Anda dapat menggunakan seluruh waktu yang tersedia untuk mengerjakan soal.
+                    Pastikan sudah siap mengikuti sesi Google Meet saat waktu tes berakhir.
+                </p>
+            </div>
+
+
             @if ($jadwalTes && $jadwalTes->link_gmeet)
                 <div class="alert alert-primary d-flex align-items-center justify-content-between">
                     <div>
