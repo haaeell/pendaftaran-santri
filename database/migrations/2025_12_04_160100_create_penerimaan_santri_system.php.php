@@ -34,7 +34,7 @@ return new class extends Migration
             $table->string('no_telp')->nullable();
             $table->string('nik')->nullable();
             $table->string('password');
-            $table->enum('role', ['admin', 'santri'])->default('santri');
+            $table->enum('role', ['admin', 'santri', 'penguji'])->default('santri');
             $table->rememberToken();
             $table->timestamps();
         });

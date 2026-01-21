@@ -43,9 +43,11 @@ class TestController extends Controller
             $soalTampil[$kat->id] = $kat->soal->pluck('id')->toArray();
         }
 
+        $jadwal = JadwalTesSantri::where('user_id', Auth::user()->id)->first();
+
         session(['soal_tes' => $soalTampil]);
 
-        return view('santri.test.index', compact('kategori'));
+        return view('santri.test.index', compact('kategori', 'jadwal'));
     }
 
 

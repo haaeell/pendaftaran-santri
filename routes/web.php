@@ -22,6 +22,7 @@ use App\Http\Controllers\Admin\TahunAkademikController;
 use App\Http\Controllers\Admin\DataPendaftarController;
 use App\Http\Controllers\Admin\MasterSoalController;
 use App\Http\Controllers\Admin\PengaturanPembayaranController;
+use App\Http\Controllers\Admin\PengujiController;
 use App\Http\Controllers\QrisController;
 
 /*
@@ -95,6 +96,8 @@ Route::middleware('auth')
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
+
+        Route::resource('penguji', PengujiController::class);
 
         /*
         |-------------------------------

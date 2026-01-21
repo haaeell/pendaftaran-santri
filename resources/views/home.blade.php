@@ -7,7 +7,7 @@
 
     {{-- =========================================
     GLOBAL STYLE (Modern UI)
-========================================= --}}
+    ========================================= --}}
     <style>
         .page-title {
             font-size: 22px;
@@ -132,8 +132,8 @@
 
 
     {{-- =====================================
-        DASHBOARD ADMIN
-===================================== --}}
+    DASHBOARD ADMIN
+    ===================================== --}}
     @if ($role === 'admin')
         <div class="page-title">Selamat Datang, Admin</div>
         <div class="sub-title">Berikut ringkasan aktivitas pendaftaran & seleksi.</div>
@@ -188,8 +188,8 @@
 
 
     {{-- =====================================
-        DASHBOARD SANTRI
-===================================== --}}
+    DASHBOARD SANTRI
+    ===================================== --}}
     @if ($role === 'santri')
         @if ($pengumumanSudah)
             <div class="alert alert-info border-0 shadow-sm">
@@ -270,7 +270,7 @@
                 <span class="step-label">Upload Pembayaran</span>
                 <span
                     class="badge-modern
-                {{ $pembayaran ? ($pembayaran->status == 'diterima' ? 'bg-success2' : 'bg-warning2') : 'bg-gray' }}">
+                                {{ $pembayaran ? ($pembayaran->status == 'diterima' ? 'bg-success2' : 'bg-warning2') : 'bg-gray' }}">
                     {{ $pembayaran ? ucfirst($pembayaran->status) : 'Belum' }}
                 </span>
             </div>
@@ -290,5 +290,79 @@
             </div>
         </div>
     @endif
+
+    {{-- =====================================
+    DASHBOARD PENGUJI
+    ===================================== --}}
+    @if ($role === 'penguji')
+
+        <div class="page-title">Halo, {{ Auth::user()->name }}</div>
+        <div class="sub-title">Ringkasan tugas seleksi yang harus Anda tangani.</div>
+
+        <div class="row g-4 mb-4">
+
+            <div class="col-md-4">
+                <div class="dash-card">
+                    <div class="icon-box icon-blue">
+                        <i class="bi bi-calendar-check-fill"></i>
+                    </div>
+                    <div class="dash-title">Total Jadwal Tes</div>
+                    <div class="dash-value">{{ $totalJadwalPenguji ?? 0 }}</div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="dash-card">
+                    <div class="icon-box icon-yellow">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+                    <div class="dash-title">Belum Dinilai</div>
+                    <div class="dash-value">{{ $belumDinilai ?? 0 }}</div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="dash-card">
+                    <div class="icon-box icon-green">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                    <div class="dash-title">Sudah Dinilai</div>
+                    <div class="dash-value">{{ $sudahDinilai ?? 0 }}</div>
+                </div>
+            </div>
+
+        </div>
+
+        {{-- Jadwal Terdekat --}}
+        <div class="card shadow-sm border-0 p-4" style="border-radius: 18px;">
+            <h6 class="fw-bold mb-3">
+                <i class="bi bi-clock-history text-primary me-1"></i>
+                Jadwal Tes Terdekat
+            </h6>
+
+            @forelse ($jadwalTerdekat as $jadwal)
+                <div class="step-item">
+                    <div>
+                        <div class="fw-bold">{{ $jadwal->user->name }}</div>
+                        <div class="small text-muted">
+                            {{ \Carbon\Carbon::parse($jadwal->waktu_mulai)->format('d M Y, H:i') }} –
+                            {{ \Carbon\Carbon::parse($jadwal->waktu_selesai)->format('H:i') }} WIB
+                        </div>
+                    </div>
+
+                    <span class="badge-modern
+                                        {{ $jadwal->hasilSeleksi ? 'bg-success2' : 'bg-warning2' }}">
+                        {{ $jadwal->hasilSeleksi ? 'Sudah Dinilai' : 'Belum Dinilai' }}
+                    </span>
+                </div>
+            @empty
+                <div class="alert alert-info border-0">
+                    Belum ada jadwal tes untuk Anda.
+                </div>
+            @endforelse
+        </div>
+
+    @endif
+
 
 @endsection

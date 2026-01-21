@@ -199,5 +199,35 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now(),
             ],
         ]);
+
+        /*
+|--------------------------------------------------------------------------
+| SEEDER: PENGUJI
+|--------------------------------------------------------------------------
+*/
+        User::insert([
+            [
+                'username'   => 'penguji1',
+                'name'       => 'Penguji Satu',
+                'email'      => 'penguji1@psb.test',
+                'no_telp'    => '0811111111',
+                'nik'        => '1111111111111111',
+                'role'       => 'penguji',
+                'password'   => Hash::make('password'),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'username'   => 'penguji2',
+                'name'       => 'Penguji Dua',
+                'email'      => 'penguji2@psb.test',
+                'no_telp'    => '0822222222',
+                'nik'        => '2222222222222222',
+                'role'       => 'penguji',
+                'password'   => Hash::make('password'),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
     }
 }

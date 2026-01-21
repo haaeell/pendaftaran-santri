@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JadwalTesSantri;
 use App\Models\PengumumanHasil;
 use App\Models\TahunAkademik;
 use App\Models\User;
@@ -86,6 +87,28 @@ class HomeController extends Controller
             $totalSoal = Soal::count();
         }
 
+        $totalJadwalPenguji = 0;
+        $belumDinilai = 0;
+        $sudahDinilai = 0;
+        $jadwalTerdekat = collect();
+
+        if ($user->role === 'penguji') {
+
+            $totalJadwalPenguji = JadwalTesSantri::count();
+            $belumDinilai = JadwalTesSantri::whereHas('user.hasilTes', function ($q) {
+                $q->where(function ($qq) {
+                    $qq->whereNull('nilai')
+                        ->orWhere('nilai', 0);
+                })
+                    ->whereHas('kategori', function ($k) {
+                        $k->where('metode', '!=', 'pg');
+                    });
+            })->count();
+
+            $sudahDinilai = JadwalTesSantri::whereHas('user.hasilTes')->count();
+            $jadwalTerdekat = JadwalTesSantri::orderBy('waktu_mulai')->take(5)->get();
+        }
+
         return view('home', [
             'role' => $user->role,
             'tahunAktif' => $tahunAktif,
@@ -98,7 +121,12 @@ class HomeController extends Controller
             'menunggu' => $menunggu,
             'terverifikasi' => $terverifikasi,
             'totalSoal' => $totalSoal,
-            'notifications' => $notifications
+            'notifications' => $notifications,
+            // penguji
+            'totalJadwalPenguji' => $totalJadwalPenguji,
+            'belumDinilai' => $belumDinilai,
+            'sudahDinilai' => $sudahDinilai,
+            'jadwalTerdekat' => $jadwalTerdekat,
         ]);
     }
 }
