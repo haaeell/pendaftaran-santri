@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('title', 'Jadwal Tes Santri')
-@section('judul', Auth::user()->role === 'admin' ? 'Jadwal Tes' : 'Pengaturan Jadwal Tes')
+@section('judul', Auth::user()->role === 'penguji' ? 'Jadwal Tes' : 'Pengaturan Jadwal Tes')
 
 
 @section('content')
@@ -39,10 +39,19 @@
 
                             <td>
                                 @if (isset($jadwal[$user->id]))
-                                    {{ date('d M Y H:i', strtotime($jadwal[$user->id]->waktu_mulai)) }}
-                                    -
-                                    {{ date('H:i', strtotime($jadwal[$user->id]->waktu_selesai)) }}
-
+                                    @php
+                                        $mulai = $jadwal[$user->id]->waktu_mulai;
+                                        $selesai = $jadwal[$user->id]->waktu_selesai;
+                                    @endphp
+                            
+                                    @if (Auth::user()->role === 'penguji')
+                                        {{ date('d M Y', strtotime($mulai)) }} - {{ date('H:i', strtotime($selesai)) }}
+                                    @else
+                                        {{ date('d M Y H:i', strtotime($mulai)) }}
+                                        -
+                                        {{ date('H:i', strtotime($selesai)) }}
+                                    @endif
+                            
                                     @if ($jadwal[$user->id]->link_gmeet)
                                         <br>
                                         <a href="{{ $jadwal[$user->id]->link_gmeet }}" target="_blank"
@@ -53,11 +62,11 @@
                                 @else
                                     <span class="text-muted">Belum dijadwalkan</span>
                                 @endif
-                            </td>
+                            </td>                            
 
 
                             <td>
-                                @if (Auth::user()->role != 'admin')
+                                @if (Auth::user()->role == 'admin')
                                     @if (isset($jadwal[$user->id]))
                                         <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
                                             data-bs-target="#modalEdit{{ $user->id }}">
