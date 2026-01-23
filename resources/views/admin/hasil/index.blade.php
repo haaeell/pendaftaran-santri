@@ -54,10 +54,12 @@
 
                                 <td>
                                     @if ($kat->tipe_kriteria === 'threshold')
-                                        <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
-                                            data-bs-target="#threshold{{ $s->id }}{{ $kat->id }}">
-                                            Set
-                                        </button>
+                                        @if (Auth::user()->role === 'penguji')
+                                            <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
+                                                data-bs-target="#threshold{{ $s->id }}{{ $kat->id }}">
+                                                Set
+                                            </button>
+                                        @endif
 
                                         <div class="mt-1">
                                             @if ($hasil && $hasil->lulus_threshold === true)
@@ -69,10 +71,13 @@
                                             @endif
                                         </div>
                                     @elseif($kat->metode === 'gmeet')
-                                        <button class="btn btn-sm btn-primary text-nowrap" data-bs-toggle="modal"
-                                            data-bs-target="#nilaiGmeet{{ $s->id }}{{ $kat->id }}">
-                                            Input Nilai
-                                        </button>
+                                        @if (Auth::user()->role === 'penguji')
+                                            <button class="btn btn-sm btn-primary text-nowrap" data-bs-toggle="modal"
+                                                data-bs-target="#nilaiGmeet{{ $s->id }}{{ $kat->id }}">
+                                                Input Nilai
+                                            </button>
+                                        @endif
+
 
                                         <div class="fw-bold mt-1">
                                             {{ $hasil->nilai ?? '-' }}

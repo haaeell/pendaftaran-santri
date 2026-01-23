@@ -1,7 +1,8 @@
 @extends('layouts.dashboard')
 
 @section('title', 'Jadwal Tes Santri')
-@section('judul', 'Pengaturan Jadwal Tes')
+@section('judul', Auth::user()->role === 'admin' ? 'Jadwal Tes' : 'Pengaturan Jadwal Tes')
+
 
 @section('content')
 
@@ -56,17 +57,22 @@
 
 
                             <td>
-                                @if (isset($jadwal[$user->id]))
-                                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#modalEdit{{ $user->id }}">
-                                        Edit
-                                    </button>
+                                @if (Auth::user()->role != 'admin')
+                                    @if (isset($jadwal[$user->id]))
+                                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#modalEdit{{ $user->id }}">
+                                            Edit
+                                        </button>
+                                    @else
+                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#modalBuat{{ $user->id }}">
+                                            Buat Jadwal
+                                        </button>
+                                    @endif
                                 @else
-                                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#modalBuat{{ $user->id }}">
-                                        Buat Jadwal
-                                    </button>
+-
                                 @endif
+
                             </td>
                         </tr>
                     @endforeach
